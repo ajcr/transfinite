@@ -12,7 +12,7 @@ Works with Python 3.2 and higher. Use in a Jupyter/IPython notebook/qtconsole to
 
 Here's a quick demonstration:
 
-![alt tag](https://github.com/ajcr/py-omega/images/ordinals.png)
+![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals.png)
 
 (Don't worry, simple ways to construct ordinals are next on the agenda.)
 
