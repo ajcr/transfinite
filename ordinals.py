@@ -107,7 +107,6 @@ class OrdinalStack(BasicOrdinal):
         if not isinstance(self.stack[-1], (int, Ordinal)):
             self.stack.append(1)
         self.index = self.stack[0].index
-        self.terms = [self.stack] # for comparison with Ordinals
 
     @property
     def stack_contains_ordinal(self):
@@ -123,7 +122,7 @@ class OrdinalStack(BasicOrdinal):
     def __len__(self):
         return len(self.stack)
 
-    # Notes on comparisons
+    # Notes on comparisons:
     #
     # If both stacks are free of Ordinals, we can simply compare the
     # .stack attribute of self and other lexicographically.
@@ -138,6 +137,7 @@ class OrdinalStack(BasicOrdinal):
     # (these will all be BasicOmega instances). If all of these initial 
     # values are equal, treat the remaining memeber of the stack as a
     # new OrdinalStack instance and compare it with the Ordinal.
+
     def __eq__(self, other):
         if type(other) is int:
             return False
@@ -182,14 +182,13 @@ class Ordinal(BasicOrdinal):
     Class for transfinite ordinals expressible using omega notation.
     """
     def __init__(self, terms):
-        # internally Ordinal is a list of lists, e.g. (w^w).2 + 1 is
-        # stored as [[OrdinalStack(w, w), 2], [1]], where w is a 
-        # BasicOrdinal instance.
+        # internally Ordinal is just a list of lists, for example 
+        # (w^w).2 + 1 is stored as [[OrdinalStack(w, w), 2], [1]]
+        # where w is a BasicOrdinal instance.
         self.terms = terms
         self.stack = self.terms[0][0].stack
         self.index = self.terms[0][0].index
 
-    # think about caching this string
     def __str__(self):
         products = ["\cdot".join([str(t) for t in trm]) for trm in self.terms]
         latex = " + ".join([p for p in products])
