@@ -138,3 +138,29 @@ class TestRichCompareMethods(unittest.TestCase):
         self.assertTrue(x < y)
         self.assertTrue(y < z)
 
+
+class TestAdd(unittest.TestCase):
+
+    def test_addition_with_integers(self):
+
+        w = Ordinal([[OrdinalStack([BasicOrdinal()]), 1]])
+        w1 = Ordinal([[OrdinalStack([BasicOrdinal(1)]), 1]])
+
+        self.assertEqual(w, 3 + w)
+        self.assertEqual(w1, 999 + w1)
+
+    def test_addition_with_integers(self):
+
+        w = Ordinal([[OrdinalStack([BasicOrdinal()]), 1]])
+        w_power_w = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
+        w1 = Ordinal([[OrdinalStack([BasicOrdinal(1)]), 1]])
+
+        expected = Ordinal([[OrdinalStack([BasicOrdinal()]), 2]])
+        self.assertEqual(w + w, expected)
+        self.assertEqual(w + 1 + w, expected)
+
+        self.assertEqual(w + w_power_w, w_power_w)
+        self.assertEqual(w + w1, w1)
+
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(1)]), 1], [OrdinalStack([BasicOrdinal()]), 1]])
+        self.assertEqual(w1 + w, expected)

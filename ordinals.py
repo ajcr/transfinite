@@ -5,6 +5,7 @@ Best used in Jupyter/IPython so the LaTeX represention of the
 ordinals can be properly rendered.
 """
 
+import copy
 from functools import total_ordering
 from itertools import islice
 
@@ -85,11 +86,11 @@ class BasicOrdinal(object):
         return r"$%s$" % str(self)
 
     @property
-    def countable(self):
+    def is_countable(self):
         return self.index == 0
 
     @property
-    def uncountable(self):
+    def is_uncountable(self):
         return self.index > 0
 
 
@@ -117,7 +118,7 @@ class OrdinalStack(BasicOrdinal):
         if stk[-1] == 1:
             stk = stk[:-1]
         rbraces = '}'*(len(stk)-1)
-        return '^{'.join(str(a) for a in stk) + rbraces
+        return '^{'.join([str(a) for a in stk]) + rbraces
 
     def __len__(self):
         return len(self.stack)
@@ -179,18 +180,24 @@ class OrdinalStack(BasicOrdinal):
 @total_ordering
 class Ordinal(BasicOrdinal):
     """
-    Class for transfinite ordinals expressible using omega notation.
+    Class for transfinite ordinals expressible using omega notation,
+    represented in Cantor normal form.
     """
     def __init__(self, terms):
-        # internally Ordinal is just a list of lists, for example 
+        # Internally Ordinal is just a list of lists, for example 
         # (w^w).2 + 1 is stored as [[OrdinalStack(w, w), 2], [1]]
         # where w is a BasicOrdinal instance.
+        #
+        # Each element of the list is a list of OrdinalStack
+        # instances or integers, representing products. The last 
+        # element in this list must be an integer.
         self.terms = terms
         self.stack = self.terms[0][0].stack
         self.index = self.terms[0][0].index
 
     def __str__(self):
-        products = ["\cdot".join([str(t) for t in trm]) for trm in self.terms]
+        terms = self.terms
+        products = ["\cdot".join([str(t) for t in trm]) for trm in terms]
         latex = " + ".join([p for p in products])
         return latex
 
@@ -221,4 +228,54 @@ class Ordinal(BasicOrdinal):
             return self.terms < other.terms
         else:
             raise TypeError(self.cmp_error_string % (type(self), type(other)))
+
+    def __add__(self, other):
+        if type(other) is int:
+            if other < 0:
+                raise ValueError("can only add positive integers to ordinal")
+            terms = self.terms[:]
+            if type(terms[-1][0]) is int:
+                terms[-1][0] += other
+            else:
+                terms.append([other])
+            return Ordinal(terms)
+
+        # We can now assume other is an Ordinal and find out how 
+        # many terms of self should "disappear". However we
+        # cannot simply compare magnitudes as we need to allow
+        # sums such as  w + w.2 == w.3 and w.5 + w == w.6.
+        #
+        # Therefore we need to strip the "multiples" of ordinals 
+        # from each term first, find where to cut off self to 
+        # insert other and then form the new list of terms.
+
+        s_terms_no_mult = [term[:-1] for term in self.terms]
+        o_lead_term_no_mult = other.terms[0][:-1]
+        o_lead_term_mult = other.terms[0][-1]
+
+        n = _hi_lo_bisect_right(s_terms_no_mult, o_lead_term_no_mult)
+
+        if s_terms_no_mult[n-1] == o_lead_term_no_mult:
+            s_last_term_mult = self.terms[n-1][-1]
+            if type(s_last_term_mult) is int and type(o_lead_term_mult) is int:
+                s_terms = copy.deepcopy(self.terms[:n])
+                s_terms[n-1][-1] += o_lead_term_mult
+                terms = s_terms + other.terms[1:]
+            elif a < o_lead_term_mult:
+                s_terms = copy.deepcopy(self.terms[:n-1])
+                terms = s_terms + other.terms
+            elif a > o_lead_term_mult:
+                s_terms = copy.deepcopy(self.terms[:n])
+                terms = s_terms + other.terms[1:]
+        else:
+            s_terms = self.terms[:n]
+            o_terms = other.terms
+            terms = s_terms + o_terms
+        return Ordinal(terms)
+
+    def __radd__(self, other):
+        if type(other) is int and other > 0:
+            return self
+        else:
+            raise ValueError("can only add ordinals and positive integers")
 
