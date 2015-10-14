@@ -37,7 +37,6 @@ class BasicOrdinal(object):
     Contains general methods that the OrdinalStack class
     and Ordinal class will inherit.
     """
-    __slots__ = ['index']
 
     cmp_error_string = "unorderable types: %s and %s"
 
@@ -75,9 +74,9 @@ class BasicOrdinal(object):
         the convention that \omega == \omega_0.
         """
         if self.index:
-            return r"\omega_{%s}" % self.index
+            return "\omega_{%s}" % self.index
         else:
-            return r"\omega"
+            return "\omega"
 
     def __repr__(self):
         return str(self)
@@ -192,18 +191,20 @@ class Ordinal(BasicOrdinal):
         # instances or integers, representing products. The last 
         # element in this list must be an integer.
         self.terms = terms
-        self.stack = self.terms[0][0].stack
         self.index = self.terms[0][0].index
+
+    @staticmethod
+    def _make_product_string(trm):
+        if len(trm) > 1 and trm[-1] == 1:
+            return "\cdot".join([str(t) for t in trm[:-1]])
+        else:
+            return "\cdot".join([str(t) for t in trm])
 
     def __str__(self):
         terms = self.terms
-        products = ["\cdot".join([str(t) for t in trm]) for trm in terms]
+        products = [self._make_product_string(trm) for trm in terms]
         latex = " + ".join([p for p in products])
         return latex
-
-    def __iter__(self):
-        for trm in self.terms:
-            yield trm
 
     def __eq__(self, other):
         if type(other) is int:
@@ -279,3 +280,8 @@ class Ordinal(BasicOrdinal):
         else:
             raise ValueError("can only add ordinals and positive integers")
 
+
+def omega(index=0):
+    return Ordinal([[OrdinalStack([BasicOrdinal(index)]), 1]])
+
+w = omega
