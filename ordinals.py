@@ -192,6 +192,8 @@ class Ordinal(BasicOrdinal):
         # element in this list must be an integer.
         self.terms = terms
         self.index = self.terms[0][0].index
+        self.is_successor = type(self.terms[-1][0]) is int
+        self.is_limit = not self.is_successor
 
     @staticmethod
     def _make_product_string(trm):
@@ -201,9 +203,8 @@ class Ordinal(BasicOrdinal):
             return "\cdot".join([str(t) for t in trm])
 
     def __str__(self):
-        terms = self.terms
-        products = [self._make_product_string(trm) for trm in terms]
-        latex = " + ".join([p for p in products])
+        products = [self._make_product_string(trm) for trm in self.terms]
+        latex = " + ".join(products)
         return latex
 
     def __eq__(self, other):
@@ -235,7 +236,7 @@ class Ordinal(BasicOrdinal):
             if other < 0:
                 raise ValueError("can only add positive integers to ordinal")
             terms = self.terms[:]
-            if type(terms[-1][0]) is int:
+            if self.is_successor:
                 terms[-1][0] += other
             else:
                 terms.append([other])
@@ -279,6 +280,22 @@ class Ordinal(BasicOrdinal):
             return self
         else:
             raise ValueError("can only add ordinals and positive integers")
+
+    def __mul__(self, other):
+        if type(other) is int:
+            if other < 0:
+                raise ValueError("can only multiply positive integers with ordinal")
+            lead_term = copy.deepcopy(self.terms[:1])
+            lead_term[0][-1] *= other
+            return Ordinal(lead_term + self.terms[1:])
+
+        # and if other is not an integer...
+
+    def __rmul__(self, other):
+        if type(other) is int and other > 0:
+            return self
+        else:
+            raise ValueError("can only multiply ordinals and positive integers")
 
 
 def omega(index=0):

@@ -149,7 +149,10 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(w, 3 + w)
         self.assertEqual(w1, 999 + w1)
 
-    def test_addition_with_integers(self):
+        with self.assertRaises(ValueError):
+            -5 + w
+
+    def test_addition_with_ordinals(self):
 
         w = Ordinal([[OrdinalStack([BasicOrdinal()]), 1]])
         w_power_w = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
