@@ -12,17 +12,26 @@ Works with Python 3.2 and higher. Use in a Jupyter/IPython notebook/qtconsole to
 
 Here's a quick demonstration:
 
-![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinal_add.png)
+Create initial ordinals with the `omega` function:
+
+![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals1.png)
+
+Perform arithmetic to build more complicated ordinals. All ordinals are represented in Cantor normal form:
+
+![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals2.png)
+
+Use the module to compute fiddly/tedious arithmetic:
+
+![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals3.png)
+
 
 ## Future
 
 To be implemented very soon...
 
-- Ordinal multiplication.
 - Ordinal exponentiation.
-- Better constructors for ordinals.
 - Visualisation of small countable ordinals (maybe).
 - More exotic species of ordinals (maybe).
 
-
+Bug reports and feature requests are welcomed, as are pull requests.
 

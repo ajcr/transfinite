@@ -104,9 +104,9 @@ class TestRichCompareMethods(unittest.TestCase):
         a = OrdinalStack([BasicOrdinal(), BasicOrdinal(), 2])
         b = OrdinalStack([BasicOrdinal(2), BasicOrdinal(1), 2])
 
-        a2 = Ordinal([[a]])
+        a2 = Ordinal([[a, 1]])
         c = Ordinal([[a, 2], [3]])
-        d = Ordinal([[b, BasicOrdinal(1)], [2]])
+        d = Ordinal([[b, BasicOrdinal(1), 1], [2]])
 
         self.assertEqual(a, a2)
         self.assertTrue(a < c)
@@ -139,18 +139,22 @@ class TestRichCompareMethods(unittest.TestCase):
         self.assertTrue(y < z)
 
 
-class TestAdd(unittest.TestCase):
+class TestAddition(unittest.TestCase):
 
     def test_addition_with_integers(self):
 
-        w = Ordinal([[OrdinalStack([BasicOrdinal()]), 1]])
+        w0 = Ordinal([[OrdinalStack([BasicOrdinal()]), 1]])
         w1 = Ordinal([[OrdinalStack([BasicOrdinal(1)]), 1]])
 
-        self.assertEqual(w, 3 + w)
+        self.assertEqual(w0, 3 + w0)
         self.assertEqual(w1, 999 + w1)
 
+        # test __radd__
         with self.assertRaises(ValueError):
-            -5 + w
+            -5 + w0
+
+        with self.assertRaises(ValueError):
+            'some string' + w0
 
     def test_addition_with_ordinals(self):
 
@@ -167,3 +171,72 @@ class TestAdd(unittest.TestCase):
 
         expected = Ordinal([[OrdinalStack([BasicOrdinal(1)]), 1], [OrdinalStack([BasicOrdinal()]), 1]])
         self.assertEqual(w1 + w, expected)
+
+
+class TestMultiplication(unittest.TestCase):
+
+    def test_multiplication_with_integers(self):
+
+        w0 = omega(0)
+        w1 = omega(1)
+
+        # testing __rmul__
+        self.assertEqual(3*w0, w0)
+        self.assertEqual(77*w1, w1)
+
+        with self.assertRaises(ValueError):
+            -5 * w0
+
+        with self.assertRaises(ValueError):
+            'some string' * w0
+
+        # testing __mul__
+        expected = Ordinal([[OrdinalStack([BasicOrdinal()]), 9]])
+        self.assertEqual(w0 * 9, expected)
+
+    def test_multiplication_with_ordinals(self):
+
+        w0 = omega(0)
+        w1 = omega(1)
+
+        self.assertEqual(w0 * w1, w1)
+        self.assertEqual(w0*7*w1*2, w1*2)
+
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(1)]), OrdinalStack([BasicOrdinal(0)]), 1]])
+        self.assertEqual(w1 * w0, expected)
+
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(), 2]), 1]])
+        self.assertEqual(w0 * w0, expected)
+
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(1), 3]), 1]])
+        self.assertEqual(w1 * w1 * w1, expected)
+
+        expected = w0 * w0
+        result = (w0 + 1) * w0
+        self.assertEqual(result, expected)
+
+        expected = w0*w0 + w0
+        result = w0 * (w0 + 1)
+        self.assertEqual(result, expected)
+
+        expected = w0*w0 + w0 + 1
+        result = (w0 + 1) * (w0 + 1)
+        self.assertEqual(result, expected)
+
+        w0_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
+
+        # w^w == w * w^w
+        self.assertEqual(w0_power_w0, w0 * w0_power_w0)
+
+        # w^w * w == w^(w + 1)
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(), w0 + 1]), 1]])
+        self.assertEqual(w0_power_w0 * w0, expected)
+
+        # w^w * w * w == w^(w + 2)
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(), w0 + 2]), 1]])
+        self.assertEqual(w0_power_w0 * w0 * w0, expected) # fix this
+
+        # w^w * w^w == w^(w*2)
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(), w0*2]), 1]])
+        self.assertEqual(w0_power_w0 * w0_power_w0, expected) # fix this
+
