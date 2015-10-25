@@ -236,6 +236,9 @@ class Ordinal(BasicOrdinal):
     """
     Represents transfinite ordinals in Cantor normal form.
 
+    Use an appropriate classmethod (e.g. from index) to
+    intitalise instances of this class, rather than calling
+    the __init__ method directly.
     """
     def __init__(self, terms):
         # Internally, just a list of lists ("terms"). For example 
@@ -249,6 +252,19 @@ class Ordinal(BasicOrdinal):
         self.index = self.terms[0][0].index
         self.is_successor = type(self.terms[-1][0]) is int
         self.is_limit = not self.is_successor
+
+    @classmethod
+    def from_index(cls, index=0):
+        """
+        Constructs Ordinals of the form:
+
+            \omega_{index}
+
+        where index can be an integer or another ordinal.
+        """
+        if not isinstance(index, (int, Ordinal)):
+            raise TypeError("index must be an integer or an Ordinal instance")
+        return cls([[OrdinalStack([BasicOrdinal(index)]), 1]])
 
     @staticmethod
     def _make_product_string(trm):
@@ -383,16 +399,5 @@ class Ordinal(BasicOrdinal):
         else:
             raise ValueError("can only multiply ordinals and positive integers")
 
-
-def omega(index=0):
-    """
-    Constructs ordinals of the form:
-
-        \omega_{index}
-
-    where index can be an integer or another ordinal.
-    """
-    if not isinstance(index, (int, Ordinal)):
-        raise TypeError("index must be an integer or an Ordinal instance")
-    return Ordinal([[OrdinalStack([BasicOrdinal(index)]), 1]])
+omega = Ordinal.from_index
 
