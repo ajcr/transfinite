@@ -275,8 +275,7 @@ class Ordinal(BasicOrdinal):
 
     def __str__(self):
         products = [self._make_product_string(trm) for trm in self.terms]
-        latex = " + ".join(products)
-        return latex
+        return " + ".join(products)
 
     def __eq__(self, other):
         if type(other) is int:
@@ -372,7 +371,6 @@ class Ordinal(BasicOrdinal):
             else:
                 terms = self._multiply_by_integer(other)
                 return Ordinal(terms.terms)
-
         else:
             s_lead_term = self.terms[0]
             terms = []
@@ -386,7 +384,6 @@ class Ordinal(BasicOrdinal):
                     else:
                         term = s_lead_term[:n] + o_term
                     terms.append(term)
-
                 except AttributeError:
                     # no .index attribute so we have an integer
                     term = self._multiply_by_integer(o_term[0])

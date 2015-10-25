@@ -9,9 +9,12 @@ class TestRichCompareMethods(unittest.TestCase):
     classes used to implement ordinals: BasicOrdinal,
     OrdinalStack and Ordinal.
 
-    The __eq__ and __lt__ methods are iprimarily tested
+    The __eq__ and __lt__ methods are the focus of testing
     here; the class decorator @functools.total_ordering
-    takes care of the other methods.
+    takes care of the other comparison methods.
+
+    For these tests we construct the objects by hand (without
+    using any constructors or arithmetic operations).
     """
     def test_BasicOrdinal_to_BasicOrdinal(self):
 
@@ -120,14 +123,14 @@ class TestRichCompareMethods(unittest.TestCase):
         a = OrdinalStack([BasicOrdinal(), BasicOrdinal(), 2])
         b = OrdinalStack([BasicOrdinal(), BasicOrdinal(), BasicOrdinal(), 2])
         c = Ordinal([[a, 2], [3]])
-        d = Ordinal([[b, BasicOrdinal()], [2]])
+        d = Ordinal([[b, OrdinalStack([BasicOrdinal()]), 1], [2]])
         e = OrdinalStack([BasicOrdinal(), c])
         f = OrdinalStack([BasicOrdinal(), BasicOrdinal(), c])
-        g = Ordinal([[OrdinalStack([BasicOrdinal()])], [1]])
+        g = Ordinal([[OrdinalStack([BasicOrdinal()]), 1], [1]])
         h = OrdinalStack([BasicOrdinal(), f])
 
-        x = Ordinal([[OrdinalStack([BasicOrdinal()])], [1]])
-        y = Ordinal([[OrdinalStack([BasicOrdinal()])], [2]])
+        x = Ordinal([[OrdinalStack([BasicOrdinal()]), 1], [1]])
+        y = Ordinal([[OrdinalStack([BasicOrdinal()]), 1], [2]])
         z = Ordinal([[OrdinalStack([BasicOrdinal()]), 3], [1]])
 
         self.assertNotEqual(c, d)
