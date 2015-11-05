@@ -147,7 +147,7 @@ class OrdinalStack(BasicOrdinal):
         if type(other) is int:
             return False
         elif type(other) is BasicOrdinal:
-            return op(self.stack, [other, 1]) # here
+            return op(self.stack, [other, 1])
         elif type(other) is OrdinalStack:
             if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
                 return op(self.stack, other.stack)
@@ -166,7 +166,7 @@ class OrdinalStack(BasicOrdinal):
                 else:
                     return op(OrdinalStack(self.stack[n-1:]), other.stack[-1])
         elif type(other) is Ordinal:
-            return op([[self, 1]], other.terms) # here
+            return op([[self, 1]], other.terms)
         else:
             raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
@@ -241,18 +241,21 @@ class Ordinal(BasicOrdinal):
     """
     Represents transfinite ordinals in Cantor normal form.
 
-    Use an appropriate classmethod (e.g. from index) to
+    Internally, this class is just a list of lists (known
+    as "terms"). Each sublist is itself a list of
+    OrdinalStack instances and/or integers. For example,
+    the ordinal (w^w).2 + 1 is stored as
+
+        [[OrdinalStack(w, w), 2], [1]]
+
+    The last element in each sublist is always the integer
+    1 (this is to ensure the arithemtic methods work).
+
+    Use an appropriate classmethod (e.g. from_index) to
     intitalise instances of this class, rather than calling
     the __init__ method directly.
     """
     def __init__(self, terms):
-        # Internally, just a list of lists ("terms"). For example 
-        # (w^w).2 + 1 is stored as [[OrdinalStack(w, w), 2], [1]]
-        # where w is a BasicOrdinal(0) instance.
-        #
-        # Each term of the list is a list of OrdinalStack instances 
-        # or integers. The last element in this term must be an 
-        # integer.
         self.terms = terms
         self.index = self.terms[0][0].index
         self.is_successor = type(self.terms[-1][0]) is int
