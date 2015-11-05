@@ -3,12 +3,19 @@ Implementation of transfinite ordinals and ordinal arithmetic.
 
 Best used in Jupyter/IPython so the LaTeX represention of the
 ordinals can be properly rendered.
+
+Notes on classes: the BasicOrdinal and OrdinalStack classes are
+used to build up and represent ordinals (in the Ordinal class).
+These are internal classes and should not be called by the user
+directly.
+
 """
 
 import copy
 from functools import reduce, total_ordering
 from itertools import islice
 import operator
+
 
 def hi_lo_bisect_right(lst, x):
     # bisect list sorted high -> low. Based on the code in:
@@ -136,59 +143,38 @@ class OrdinalStack(BasicOrdinal):
     # values are equal, treat the remaining memeber of the stack as a
     # new OrdinalStack instance and compare it with the Ordinal.
 
-    def __eq__(self, other):
+    def compare_op(self, other, op):
         if type(other) is int:
             return False
         elif type(other) is BasicOrdinal:
-            return self.stack == [other, 1]
+            return op(self.stack, [other, 1]) # here
         elif type(other) is OrdinalStack:
             if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
-                return self.stack == other.stack
+                return op(self.stack, other.stack)
             else:
                 n = min(len(self), len(other))
                 shortest = min((self, other), key=len)
                 pairs = zip(self.stack, other.stack)
                 for a, b in islice(pairs, n-1):
                     if a != b:
-                        return False
+                        return op(a, b)
                 # ...now compare ordinal at top with rest of stack...
                 if n == len(self) == len(other):
-                    return self.stack[-1] == other.stack[-1]
+                    return op(self.stack[-1], other.stack[-1])
                 elif shortest is self:
-                    return self.stack[-1] == OrdinalStack(other.stack[n-1:])
+                    return op(self.stack[-1], OrdinalStack(other.stack[n-1:]))
                 else:
-                    return OrdinalStack(self.stack[n-1:]) == other.stack[-1]
+                    return op(OrdinalStack(self.stack[n-1:]), other.stack[-1])
         elif type(other) is Ordinal:
-            return [[self, 1]] == other.terms
-        else:
-            return False
-
-    def __lt__(self, other):
-        if type(other) is int:
-            return False
-        elif type(other) is BasicOrdinal:
-            return self.stack < [other, 1]
-        elif type(other) is OrdinalStack:
-            if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
-                return self.stack < other.stack
-            else:
-                n = min(len(self), len(other))
-                shortest = min((self, other), key=len)
-                pairs = zip(self.stack, other.stack)
-                for a, b in islice(pairs, n-1):
-                    if a != b:
-                        return a < b
-                # ...now compare ordinal at top with rest of stack...
-                if n == len(self) == len(other):
-                    return self.stack[-1] < other.stack[-1]
-                elif shortest is self:
-                    return self.stack[-1] < OrdinalStack(other.stack[n-1:])
-                else:
-                    return OrdinalStack(self.stack[n-1:]) < other.stack[-1]
-        elif type(other) is Ordinal:
-            return [[self]] < other.terms
+            return op([[self, 1]], other.terms) # here
         else:
             raise TypeError(self._cmp_error_string % (type(self), type(other)))
+
+    def __lt__(self, other):
+        return self.compare_op(other, operator.lt)
+
+    def __eq__(self, other):
+        return self.compare_op(other, operator.eq)
 
     # this function should be re-written; it repeats itself a lot
     @staticmethod
