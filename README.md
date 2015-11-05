@@ -8,9 +8,9 @@ The infinite made simple. Allows transfinite ordinals to be easily constructed a
 
 Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the output properly rendered (this makes working with ordinals much, much easier).
 
-Here's a quick demonstration:
+Here's a quick demonstration...
 
-Create initial ordinals with the `omega` function:
+Create initial ordinals with the `omega` function. Arbitrarily indexes are supported:
 
 ![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals1.png)
 
@@ -18,9 +18,12 @@ Perform arithmetic to build more complicated ordinals. All ordinals are represen
 
 ![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals2.png)
 
-Use the module to compute fiddly/tedious arithmetic:
+You can easily build up the intimidating ordinal shown on [Wikipedia's page for ordinal arithmetic](https://en.wikipedia.org/wiki/Ordinal_arithmetic#Cantor_normal_form)... and then use it in calculations:
 
-![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals3.png)
+![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals4.png)
+
+
+Comparison operators also work exactly as they're meant to, so any two ordinals can be compared and any inequality verified.
 
 
 ## Future
