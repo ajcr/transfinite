@@ -6,8 +6,9 @@ ordinals can be properly rendered.
 """
 
 import copy
-from functools import total_ordering
+from functools import reduce, total_ordering
 from itertools import islice
+import operator
 
 def hi_lo_bisect_right(lst, x):
     # bisect list sorted high -> low. Based on the code in:
@@ -35,7 +36,7 @@ class BasicOrdinal(object):
     Contains general methods that the OrdinalStack class
     and Ordinal class will inherit.
     """
-    cmp_error_string = "unorderable types: %s and %s"
+    _cmp_error_string = "unorderable types: %s and %s"
 
     def __init__(self, index=0):
         self.index = index
@@ -62,7 +63,7 @@ class BasicOrdinal(object):
         elif type(other) is Ordinal:
             return [[self, 1]] < other.terms
         else:
-            raise TypeError(self.cmp_error_string % (type(self), type(other)))
+            raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     def __str__(self):
         """
@@ -187,15 +188,15 @@ class OrdinalStack(BasicOrdinal):
         elif type(other) is Ordinal:
             return [[self]] < other.terms
         else:
-            raise TypeError(self.cmp_error_string % (type(self), type(other)))
+            raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     # this function should be re-written; it repeats itself a lot
     @staticmethod
     def add_stack_powers(a, b):
         """
-        If two ordinal stacks a and b have the same base,
-        return a new OrdinalStack instance with the powers
-        added together.
+        If two OrdinalStack instances a and b have
+        the same base, return a new OrdinalStack
+        instance with the powers added together.
         """
         assert a.index == b.index
         base = a.stack[0]
@@ -204,8 +205,8 @@ class OrdinalStack(BasicOrdinal):
         if isinstance(a_power[0], int):
             if isinstance(b_power[0], int):
                 return OrdinalStack([base, a_power[0] + b_power[0]])
-            elif isinstance(a_power[0], Ordinal):
-                return OrdinalStack([base, power])
+            elif isinstance(b_power[0], Ordinal):
+                return OrdinalStack([base, b_power[0]])
             else:
                 power = Ordinal([[OrdinalStack(b_power), 1]])
                 return OrdinalStack([base, power])
@@ -230,6 +231,24 @@ class OrdinalStack(BasicOrdinal):
             else:
                 b = Ordinal([[OrdinalStack(b_power), 1]])
                 return OrdinalStack([base, a + b])
+
+    def multiply_stack_power_by_ordinal(self, other):
+        """
+        Treat self.stack[1:] as an Ordinal and multiply
+        it by the Ordinal other. Return a new OmegaStack
+        instance with self.stack[1:] equal to the new
+        Ordinal.
+        """
+        base = self.stack[0]
+        self_power = self.stack[1:]
+        if isinstance(self_power[0], int):
+            return OrdinalStack([base, other])
+        else:
+            if isinstance(self_power[0], Ordinal):
+                power = self_power[0] * other
+            else:
+                power = Ordinal([[OrdinalStack(self_power), 1]]) * other
+            return OrdinalStack([base, power])
 
 @total_ordering
 class Ordinal(BasicOrdinal):
@@ -299,7 +318,7 @@ class Ordinal(BasicOrdinal):
         elif type(other) is Ordinal:
             return self.terms < other.terms
         else:
-            raise TypeError(self.cmp_error_string % (type(self), type(other)))
+            raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     def __add__(self, other):
         if type(other) is int:
@@ -320,30 +339,30 @@ class Ordinal(BasicOrdinal):
         # Therefore we need to strip the "multiples" of ordinals 
         # from each term first, find where to cut off self to 
         # insert other and then form the new list of terms.
-
-        s_terms_no_mult = [term[:-1] for term in self.terms]
-        o_lead_term_no_mult = other.terms[0][:-1]
-        o_lead_term_mult = other.terms[0][-1]
-
-        n = hi_lo_bisect_right(s_terms_no_mult, o_lead_term_no_mult)
-
-        if s_terms_no_mult[n-1] == o_lead_term_no_mult:
-            s_last_term_mult = self.terms[n-1][-1]
-            if type(s_last_term_mult) is int and type(o_lead_term_mult) is int:
-                s_terms = copy.deepcopy(self.terms[:n])
-                s_terms[n-1][-1] += o_lead_term_mult
-                terms = s_terms + other.terms[1:]
-            elif a < o_lead_term_mult:
-                s_terms = copy.deepcopy(self.terms[:n-1])
-                terms = s_terms + other.terms
-            elif a > o_lead_term_mult:
-                s_terms = copy.deepcopy(self.terms[:n])
-                terms = s_terms + other.terms[1:]
         else:
-            s_terms = self.terms[:n]
-            o_terms = other.terms
-            terms = s_terms + o_terms
-        return Ordinal(terms)
+            s_terms_no_mult = [term[:-1] for term in self.terms]
+            o_lead_term_no_mult = other.terms[0][:-1]
+            o_lead_term_mult = other.terms[0][-1]
+
+            n = hi_lo_bisect_right(s_terms_no_mult, o_lead_term_no_mult)
+
+            if s_terms_no_mult[n-1] == o_lead_term_no_mult:
+                s_last_term_mult = self.terms[n-1][-1]
+                if type(s_last_term_mult) is int and type(o_lead_term_mult) is int:
+                    s_terms = copy.deepcopy(self.terms[:n])
+                    s_terms[n-1][-1] += o_lead_term_mult
+                    terms = s_terms + other.terms[1:]
+                elif a < o_lead_term_mult:
+                    s_terms = copy.deepcopy(self.terms[:n-1])
+                    terms = s_terms + other.terms
+                elif a > o_lead_term_mult:
+                    s_terms = copy.deepcopy(self.terms[:n])
+                    terms = s_terms + other.terms[1:]
+            else:
+                s_terms = self.terms[:n]
+                o_terms = other.terms
+                terms = s_terms + o_terms
+            return Ordinal(terms)
 
     def __radd__(self, other):
         if type(other) is int and other > 0:
@@ -352,18 +371,12 @@ class Ordinal(BasicOrdinal):
             raise ValueError("can only add ordinals and positive integers")
 
     def _multiply_by_integer(self, n):
-        """
-        Multiply the ordinal by a finite integer n.
-
-        Returns a list of terms (that can then be used to intialise
-        a new Ordinal instance).
-        """
         lead_term = copy.deepcopy(self.terms[:1])
         lead_term[0][-1] *= n
         return Ordinal(lead_term + self.terms[1:])
 
     def __mul__(self, other):
-        if type(other) is int:
+        if isinstance(other, int):
             if other < 0:
                 raise ValueError("can only multiply ordinals and positive integers")
             elif other == 0:
@@ -395,6 +408,84 @@ class Ordinal(BasicOrdinal):
             return self
         else:
             raise ValueError("can only multiply ordinals and positive integers")
+
+    def _raise_to_integer_power(self, n):
+        # naive approach: repeated multiplication (this 
+        # does not scale well).
+
+        # TODO: find a formula for finite powers of ordinals.
+        return reduce(operator.mul, (self for _ in range(n)))
+
+    def _raise_ordinal_to_single_term_power(self, other):
+        if self.index < other.index:
+            return other._raise_lower_index_to_single_term_power()
+        else:
+            lead_term = self.terms[0][0]
+            other_terms = self.terms[0][1:]
+            new_lead_term = lead_term.multiply_stack_power_by_ordinal(other)
+            terms = [[new_lead_term, 1]]
+            return Ordinal(terms)
+
+    def _raise_lower_index_to_single_term_power(self):
+        lead_term = self.terms[0][0]
+        tail_terms = self.terms[0][1:]
+        idx = lead_term.index
+        if lead_term.stack[1] == 1:
+            ret = Ordinal.from_index(idx)
+        elif isinstance(lead_term.stack[1], int):
+            n = lead_term.stack[1] - 1
+            base = BasicOrdinal(idx)
+            stk = OrdinalStack([base, base, n])
+            ret = Ordinal([[stk, 1]])
+        else:
+            base = BasicOrdinal(idx)
+            stk = OrdinalStack([base] + lead_term.stack)
+            ret = Ordinal([[stk, 1]])
+
+        # finally, raise ret Ordinal to power of tail_terms
+        if isinstance(tail_terms[0], int):
+            a = tail_terms[0]
+            return ret._raise_to_integer_power(a)
+        else:
+            a = Ordinal([tail_terms])
+            return ret._raise_ordinal_to_single_term_power(a)
+
+    def __pow__(self, other):
+        if isinstance(other, int):
+            if other > 0:
+                return self._raise_to_integer_power(other)
+            elif other == 0:
+                return 1
+            else:
+                raise ValueError("Cannot raise Ordinal to negative integer power")
+        else:
+            ordinals = []
+            for term in other.terms:
+                if len(term) > 1:
+                    a = Ordinal([term])
+                    b = self._raise_ordinal_to_single_term_power(a)
+                else:
+                    a = term[0]
+                    b = self._raise_to_integer_power(a)
+                ordinals.append(b)
+            return reduce(operator.mul, ordinals)
+
+    def __rpow__(self, other):
+        if other == 1 or other == 0:
+            return other
+        elif isinstance(other, int) and other < 0:
+            raise ValueError("Cannot raise negative integer to Ordinal power")
+        else:
+            ordinals = []
+            for term in self.terms:
+                if len(term) > 1:
+                    a = Ordinal([term])
+                    b = self._raise_lower_index_to_single_term_power()
+                else:
+                    a = term[0]
+                    b = other ** a
+                ordinals.append(b)
+            return reduce(operator.mul, ordinals)
 
 omega = Ordinal.from_index
 

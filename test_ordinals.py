@@ -243,3 +243,74 @@ class TestMultiplication(unittest.TestCase):
         expected = Ordinal([[OrdinalStack([BasicOrdinal(), w0*2]), 1]])
         self.assertEqual(w0_power_w0 * w0_power_w0, expected) # fix this
 
+    def test_exponentiation_with_integer_base(self):
+        # this tests Ordinal.__rpow__
+        w0 = omega(0)
+        w1 = omega(1)
+        w0_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
+        w0_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
+        w0_power_w0_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal(), BasicOrdinal()]), 1]])
+
+        self.assertEqual(0**w1, 0)
+        self.assertEqual(1**w0, 1)
+
+        self.assertEqual(2**w0, w0)
+        self.assertEqual(2**w1, w1)
+
+        # 5 ^ (w^w) == w^w^w
+        self.assertEqual(5**(w0_power_w0), w0_power_w0_power_w0)
+
+        # 3 ^ (w^8) == w^w^7
+        expected = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal(), 7]), 1]])
+        w0_power_8 = Ordinal([[OrdinalStack([BasicOrdinal(), 8]), 1]])
+        self.assertEqual(3 ** w0_power_8, expected)
+
+        # 3 ^ (w*8) == w^8
+        self.assertEqual(3 ** (w0*8), w0_power_8)
+
+        # 3 ^ (w+1) == w*3
+        self.assertEqual(3 ** (w0+1), w0*3)
+
+        # no negative values allowed
+        with self.assertRaises(ValueError):
+            (-66) ** w0
+
+    def test_exponentiation_with_integer_power(self):
+
+        w0 = omega(0)
+        w1 = omega(1)
+
+        self.assertEqual(w0**2, w0*w0)
+        self.assertEqual(w0**3, w0*w0*w0)
+
+        self.assertEqual((w0*9)**2, w0*w0*9)
+
+        # (w*3 + 4) ^ 2
+        a = w0*3 + 4
+        expected = a * a
+        self.assertEqual(a ** 2, expected)
+
+        expected = a * a * a
+        self.assertEqual(a ** 3, expected)
+
+    def test_exponentiation_with_ordinal_power(self):
+
+        w0 = omega(0)
+        w1 = omega(1)
+        w0_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(), BasicOrdinal()]), 1]])
+        w1_power_w0 = Ordinal([[OrdinalStack([BasicOrdinal(1), BasicOrdinal()]), 1]])
+
+        self.assertEqual(w0 ** w0, w0_power_w0)
+        self.assertEqual(w1 ** w0, w1_power_w0)
+        self.assertEqual(w0 ** w1, w1)
+
+        # (w1*w0) ^ w0 == w1 ^ w0
+        self.assertEqual((w1*w0)**w0, w1_power_w0)
+
+        # (w0*7 + 3) ** (w+2)
+        a = Ordinal([[OrdinalStack([BasicOrdinal(), w0+2]), 1]])
+        b = Ordinal([[OrdinalStack([BasicOrdinal(), w0+1]), 7]])
+        c = w0_power_w0 * 7
+        expected = a + b + c
+        self.assertEqual((w0 + 7) ** (w0 + 2), expected)
+

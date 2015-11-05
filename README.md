@@ -2,13 +2,11 @@
 
 Transfinite ordinal arithmetic in Python, printed in beautiful LaTeX.
 
-*Currently a work in progress*
-
 The infinite made simple. Allows transfinite ordinals to be easily constructed and compared, and then added, multiplied or raised to transfinite powers.
 
 ## Overview
 
-Works with Python 3.2 and higher. Use in a Jupyter/IPython notebook/qtconsole to have the output properly rendered (this makes working with ordinals much, much easier).
+Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the output properly rendered (this makes working with ordinals much, much easier).
 
 Here's a quick demonstration:
 
@@ -29,9 +27,13 @@ Use the module to compute fiddly/tedious arithmetic:
 
 To be implemented very soon...
 
-- Ordinal exponentiation.
 - Visualisation of small countable ordinals (maybe).
 - More exotic species of ordinals (maybe).
+
+To be tidied up soon...
+
+- Refactor code and make into a proper module
+- Eliminate/reduce need for explicit type-checking in methods
 
 Bug reports and feature requests are welcomed, as are pull requests.
 
