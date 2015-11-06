@@ -22,7 +22,7 @@ def hi_lo_bisect_right(lst, x):
     # https://hg.python.org/cpython/file/3.4/Lib/bisect.py
     hi, lo = 0, len(lst)
     while hi < lo:
-        mid = (lo+hi) // 2
+        mid = (lo + hi) // 2
         if x > lst[mid]:
             lo = mid
         else:
@@ -53,10 +53,6 @@ class BasicOrdinal(object):
             return False
         elif type(other) is BasicOrdinal:
             return self.index == other.index
-        elif type(other) is OrdinalStack:
-            return [self, 1] == other.stack
-        elif type(other) is Ordinal:
-            return [[self, 1]] == other.terms
         else:
             return False
 
@@ -65,18 +61,13 @@ class BasicOrdinal(object):
             return False
         elif type(other) is BasicOrdinal:
             return self.index < other.index
-        elif type(other) is OrdinalStack:
-            return [self, 1] < other.stack
-        elif type(other) is Ordinal:
-            return [[self, 1]] < other.terms
         else:
             raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     def __str__(self):
         """
         LaTeX represention of the ordinal. If the index
-        is 0, it is not included in the output following
-        the convention that \omega == \omega_0.
+        is 0, it is not included in the output.
         """
         if self.index:
             return "\omega_{%s}" % self.index
@@ -108,9 +99,7 @@ class OrdinalStack(BasicOrdinal):
     or an Ordinal instance.
     """
     def __init__(self, stack):
-        self.stack = list(stack)
-        if not isinstance(self.stack[-1], (int, Ordinal)):
-            self.stack.append(1)
+        self.stack = stack
         self.index = self.stack[0].index
 
     @property
@@ -184,7 +173,6 @@ class OrdinalStack(BasicOrdinal):
         the same base, return a new OrdinalStack
         instance with the powers added together.
         """
-        assert a.index == b.index
         base = a.stack[0]
         a_power = a.stack[1:]
         b_power = b.stack[1:]
@@ -258,8 +246,14 @@ class Ordinal(BasicOrdinal):
     def __init__(self, terms):
         self.terms = terms
         self.index = self.terms[0][0].index
-        self.is_successor = type(self.terms[-1][0]) is int
-        self.is_limit = not self.is_successor
+
+    @property
+    def is_successor(self):
+        return isinstance(self.terms[-1][0], int)
+
+    @property
+    def is_limit(self):
+        return not self.is_successor
 
     @classmethod
     def from_index(cls, index=0):
@@ -272,7 +266,7 @@ class Ordinal(BasicOrdinal):
         """
         if not isinstance(index, (int, Ordinal)):
             raise TypeError("index must be an integer or an Ordinal instance")
-        return cls([[OrdinalStack([BasicOrdinal(index)]), 1]])
+        return cls([[OrdinalStack([BasicOrdinal(index), 1]), 1]])
 
     @staticmethod
     def _make_product_string(trm):
@@ -319,15 +313,6 @@ class Ordinal(BasicOrdinal):
             else:
                 terms.append([other])
             return Ordinal(terms)
-
-        # We can now assume other is an Ordinal and find out how 
-        # many terms of self should "disappear". However we
-        # cannot simply compare magnitudes as we need to allow
-        # sums such as  w + w.2 == w.3 and w.5 + w == w.6.
-        #
-        # Therefore we need to strip the "multiples" of ordinals 
-        # from each term first, find where to cut off self to 
-        # insert other and then form the new list of terms.
         else:
             s_terms_no_mult = [term[:-1] for term in self.terms]
             o_lead_term_no_mult = other.terms[0][:-1]
