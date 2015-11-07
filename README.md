@@ -28,15 +28,13 @@ Comparison operators also work exactly as they're meant to, so any two ordinals 
 
 ## Future
 
-To be implemented very soon...
+To be implemented soon...
 
+- Veblen hierarchies, large countable ordinals.
 - Visualisation of small countable ordinals (maybe).
-- More exotic species of ordinals (maybe).
 
 To be tidied up soon...
 
-- Refactor code and make into a proper module
+- Refactor code and make into a proper Python module
 - Eliminate/reduce need for explicit type-checking in methods
-
-Bug reports and feature requests are welcomed, as are pull requests.
 

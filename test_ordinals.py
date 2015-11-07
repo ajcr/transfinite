@@ -72,12 +72,6 @@ class TestRichCompareMethods(unittest.TestCase):
         self.assertTrue(c < d)
         self.assertTrue(d > c > a2)
 
-    def test_BasicOrdinal_to_Omega(self):
-
-        f = Ordinal([[OrdinalStack([BasicOrdinal(), 1])], [1]])
-
-        self.assertTrue(BasicOrdinal() < f)
-
     def test_OrdinalStack_to_OrdinalStack(self):
 
         a2 = OrdinalStack([BasicOrdinal(), 1])

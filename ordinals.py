@@ -224,6 +224,7 @@ class OrdinalStack(BasicOrdinal):
                 power = Ordinal([[OrdinalStack(self_power), 1]]) * other
             return OrdinalStack([base, power])
 
+
 @total_ordering
 class Ordinal(BasicOrdinal):
     """
@@ -282,8 +283,6 @@ class Ordinal(BasicOrdinal):
     def __eq__(self, other):
         if type(other) is int:
             return False
-        elif type(other) is BasicOrdinal:
-            return self.terms == [[other]]
         elif type(other) is OrdinalStack:
             return self.terms == [[other, 1]]
         elif type(other) is Ordinal:
@@ -294,10 +293,8 @@ class Ordinal(BasicOrdinal):
     def __lt__(self, other):
         if type(other) is int:
             return False
-        elif type(other) is BasicOrdinal:
-            return self.terms < [[other]]
         elif type(other) is OrdinalStack:
-            return self.terms < [[other]]
+            return self.terms < [[other, 1]]
         elif type(other) is Ordinal:
             return self.terms < other.terms
         else:
@@ -405,7 +402,7 @@ class Ordinal(BasicOrdinal):
         tail_terms = self.terms[0][1:]
         idx = lead_term.index
         if lead_term.stack[1] == 1:
-            ret = Ordinal.from_index(idx)
+            ret = self.from_index(idx)
         elif isinstance(lead_term.stack[1], int):
             n = lead_term.stack[1] - 1
             base = BasicOrdinal(idx)
