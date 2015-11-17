@@ -30,11 +30,11 @@ Comparison operators also work exactly as they're meant to, so any two ordinals 
 
 To be implemented soon...
 
-- Veblen hierarchies, large countable ordinals.
+- Veblen hierarchy, large countable ordinals.
 - Visualisation of small countable ordinals (maybe).
 
 To be tidied up soon...
 
-- Refactor code and make into a proper Python module
-- Eliminate/reduce need for explicit type-checking in methods
+- Some internal methods can be simplified.
+- Eliminate/reduce need for explicit type-checking in methods.
 

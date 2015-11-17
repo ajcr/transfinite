@@ -48,30 +48,6 @@ class TestRichCompareMethods(unittest.TestCase):
 
         self.assertTrue(d >= c >= b >= a)
 
-    def test_BasicOrdinal_to_OrdinalStack(self):
-
-        a = BasicOrdinal()
-        a2 = OrdinalStack([BasicOrdinal(), 1])
-        b = BasicOrdinal(7)
-
-        self.assertEqual(a, a2)
-        self.assertNotEqual(b, a2)
-
-        c = OrdinalStack([BasicOrdinal(), BasicOrdinal(), 2])
-        d = OrdinalStack([BasicOrdinal(2), BasicOrdinal(1), 2])
-
-        self.assertTrue(12319 < a2)
-        self.assertTrue(99885 < c)
-        self.assertNotEqual(a, c)
-        self.assertNotEqual(b, c)
-
-        # <, >, etc
-        self.assertTrue(a < c)
-        self.assertTrue(BasicOrdinal(1) > c)
-        self.assertTrue(a2 < d)
-        self.assertTrue(c < d)
-        self.assertTrue(d > c > a2)
-
     def test_OrdinalStack_to_OrdinalStack(self):
 
         a2 = OrdinalStack([BasicOrdinal(), 1])

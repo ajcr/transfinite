@@ -18,8 +18,10 @@ import operator
 
 
 def hi_lo_bisect_right(lst, x):
-    # bisect list sorted high -> low. Based on the code in:
-    # https://hg.python.org/cpython/file/3.4/Lib/bisect.py
+    """
+    bisect list sorted high -> low. Based on the code in:
+    https://hg.python.org/cpython/file/3.4/Lib/bisect.py
+    """
     hi, lo = 0, len(lst)
     while hi < lo:
         mid = (lo + hi) // 2
@@ -49,7 +51,7 @@ class BasicOrdinal(object):
         self.index = index
 
     def __eq__(self, other):
-        if type(other) is int:
+        if isinstance(other, int):
             return False
         elif type(other) is BasicOrdinal:
             return self.index == other.index
@@ -57,7 +59,7 @@ class BasicOrdinal(object):
             return False
 
     def __lt__(self, other):
-        if type(other) is int:
+        if isinstance(other, int):
             return False
         elif type(other) is BasicOrdinal:
             return self.index < other.index
@@ -116,7 +118,7 @@ class OrdinalStack(BasicOrdinal):
     def __len__(self):
         return len(self.stack)
 
-    # Notes on comparisons:
+    # Notes on comparison:
     #
     # If both stacks are free of Ordinals, we can simply compare the
     # .stack attribute of self and other lexicographically.
@@ -125,7 +127,7 @@ class OrdinalStack(BasicOrdinal):
     # this simple method could produce incorrect results. E.g. the 
     # comparison w^(w^(w)) < w^(w+1) would return True since we have 
     # that w < w+1.
-    # 
+    #
     # Instead, we find out the position of the first Ordinal 
     # instance in the stacks and compare preceding elements in turn
     # (these will all be BasicOmega instances). If all of these initial 
@@ -135,8 +137,6 @@ class OrdinalStack(BasicOrdinal):
     def compare_op(self, other, op):
         if type(other) is int:
             return False
-        elif type(other) is BasicOrdinal:
-            return op(self.stack, [other, 1])
         elif type(other) is OrdinalStack:
             if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
                 return op(self.stack, other.stack)
@@ -458,5 +458,8 @@ class Ordinal(BasicOrdinal):
                 ordinals.append(b)
             return reduce(operator.mul, ordinals)
 
+# useful functions and ordinals
 omega = Ordinal.from_index
+w = omega(0)
+w1 = omega(1)
 
