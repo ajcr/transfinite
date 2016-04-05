@@ -87,7 +87,7 @@ class OrdinalStack(BasicOrdinal):
                 else:
                     return op(self.__class__(self.stack[n-1:]), other.stack[-1])
         except AttributeError:
-            # assume other is an instance of Ordinal class 
+            # assumes other is an instance of Ordinal class 
             return op([[self, 1]], other.terms)
 
     def __lt__(self, other):
@@ -101,30 +101,32 @@ class OrdinalStack(BasicOrdinal):
     def add_stack_powers(a, b):
         """
         If two OrdinalStack instances a and b have
-        the same base, return a new OrdinalStack
-        instance with the powers added together.
+        the same base (index 0 of the stack) then
+        return a new OrdinalStack instance with
+        the powers added together.
         """
         base = a.stack[0]
         a_power = a.stack[1:]
         b_power = b.stack[1:]
+
         if isinstance(a_power[0], int):
             if isinstance(b_power[0], int):
-                return OrdinalStack([base, a_power[0] + b_power[0]])
+                return OrdinalStack([base, a_power[0] + b_power[0]]) # 1
             elif isinstance(b_power[0], Ordinal):
                 return OrdinalStack([base, b_power[0]])
             else:
                 power = Ordinal([[OrdinalStack(b_power), 1]])
                 return OrdinalStack([base, power])
+
         elif isinstance(a_power[0], Ordinal):
             if isinstance(b_power[0], int):
-                power = a_power[0] + b_power[0]
-                return OrdinalStack([base, power])
+                return OrdinalStack([base, a_power[0] + b_power[0]]) # 1
             elif isinstance(b_power[0], Ordinal):
-                power = a_power[0] + b_power[0]
-                return OrdinalStack([base, power])
+                return OrdinalStack([base, a_power[0] + b_power[0]]) # 1
             else:
                 power = a_power[0] + Ordinal([[OrdinalStack(b_power), 1]])
                 return OrdinalStack([base, power])
+
         else:
             a = Ordinal([[OrdinalStack(a_power), 1]])
             if isinstance(b_power[0], int):
@@ -140,9 +142,8 @@ class OrdinalStack(BasicOrdinal):
     def multiply_stack_power_by_ordinal(self, other):
         """
         Treat self.stack[1:] as an Ordinal and multiply
-        it by the Ordinal other. Return a new OmegaStack
-        instance with self.stack[1:] equal to the new
-        Ordinal.
+        it by the Ordinal other. Return a new instance
+        with self.stack[1:] equal to the new Ordinal.
         """
         base = self.stack[0]
         self_power = self.stack[1:]
@@ -152,8 +153,8 @@ class OrdinalStack(BasicOrdinal):
             if isinstance(self_power[0], Ordinal):
                 power = self_power[0] * other
             else:
-                power = Ordinal([[OrdinalStack(self_power), 1]]) * other
-            return OrdinalStack([base, power])
+                power = Ordinal([[self.__class__(self_power), 1]]) * other
+            return self.__class__([base, power])
 
 
 @total_ordering
@@ -203,13 +204,14 @@ class Ordinal(BasicOrdinal):
     @staticmethod
     def _make_product_string(trm):
         if len(trm) > 1 and trm[-1] == 1:
+            # don't print 1 if we just have one copy
             return "\cdot".join([str(t) for t in trm[:-1]])
         else:
             return "\cdot".join([str(t) for t in trm])
 
     def __str__(self):
         products = [self._make_product_string(trm) for trm in self.terms]
-        return " + ".join(products)
+        return ' + '.join(products)
 
     def __eq__(self, other):
         if type(other) is int:
