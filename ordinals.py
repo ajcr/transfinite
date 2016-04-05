@@ -16,89 +16,21 @@ from functools import reduce, total_ordering
 from itertools import islice
 import operator
 
-
-def hi_lo_bisect_right(lst, x):
-    """
-    bisect list sorted high -> low. Based on the code in:
-    https://hg.python.org/cpython/file/3.4/Lib/bisect.py
-    """
-    hi, lo = 0, len(lst)
-    while hi < lo:
-        mid = (lo + hi) // 2
-        if x > lst[mid]:
-            lo = mid
-        else:
-            hi = mid + 1
-    return hi
-
-
-@total_ordering
-class BasicOrdinal(object):
-    """
-    Represents limit ordinals of the form:
-
-        \omega_{index}
-
-    where index can be an integer or an instance of the
-    BasicOrdinal, OrdinalStack or Ordinal classes.
-
-    Contains general methods that the OrdinalStack class
-    and Ordinal class will inherit.
-    """
-    _cmp_error_string = "unorderable types: %s and %s"
-
-    def __init__(self, index=0):
-        self.index = index
-
-    def __eq__(self, other):
-        if isinstance(other, int):
-            return False
-        elif type(other) is BasicOrdinal:
-            return self.index == other.index
-        else:
-            return False
-
-    def __lt__(self, other):
-        if isinstance(other, int):
-            return False
-        elif type(other) is BasicOrdinal:
-            return self.index < other.index
-        else:
-            raise TypeError(self._cmp_error_string % (type(self), type(other)))
-
-    def __str__(self):
-        """
-        LaTeX represention of the ordinal. If the index
-        is 0, it is not included in the output.
-        """
-        if self.index:
-            return "\omega_{%s}" % self.index
-        else:
-            return "\omega"
-
-    def __repr__(self):
-        return str(self)
-
-    def _repr_latex_(self):
-        return r"$%s$" % str(self)
-
-    @property
-    def is_countable(self):
-        return self.index == 0
-
-    @property
-    def is_uncountable(self):
-        return self.index > 0
+from algorithms import hi_lo_bisect_right
+from basic import BasicOrdinal
 
 
 @total_ordering
 class OrdinalStack(BasicOrdinal):
     """
-    Used to represent exponentiation; one of the
+    Represents ordinal exponentiation; one of the
     building blocks of the Ordinal class.
 
-    The last element in the stack is always an integer
-    or an Ordinal instance.
+    Internally, self.stack is a list of BasicOrdinal,
+    Ordinal and integer instances.
+
+    The last element is always an integer or an
+    Ordinal instance.
     """
     def __init__(self, stack):
         self.stack = stack
@@ -109,6 +41,8 @@ class OrdinalStack(BasicOrdinal):
         return any(isinstance(x, Ordinal) for x in self.stack)
 
     def __str__(self):
+        # if the element at the top of the stack
+        # is 1, we don't print this element.
         stk = self.stack
         if stk[-1] == 1:
             stk = stk[:-1]
@@ -130,14 +64,14 @@ class OrdinalStack(BasicOrdinal):
     #
     # Instead, we find out the position of the first Ordinal 
     # instance in the stacks and compare preceding elements in turn
-    # (these will all be BasicOmega instances). If all of these initial 
+    # (these will all be BasicOrdinal instances). If all of these initial 
     # values are equal, treat the remaining memeber of the stack as a
     # new OrdinalStack instance and compare it with the Ordinal.
 
-    def compare_op(self, other, op):
-        if type(other) is int:
+    def _compare_op(self, other, op):
+        if isinstance(other, int):
             return False
-        elif type(other) is OrdinalStack:
+        if type(other) is OrdinalStack:
             if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
                 return op(self.stack, other.stack)
             else:
@@ -160,10 +94,10 @@ class OrdinalStack(BasicOrdinal):
             raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     def __lt__(self, other):
-        return self.compare_op(other, operator.lt)
+        return self._compare_op(other, operator.lt)
 
     def __eq__(self, other):
-        return self.compare_op(other, operator.eq)
+        return self._compare_op(other, operator.eq)
 
     # this function should be re-written; it repeats itself a lot
     @staticmethod
