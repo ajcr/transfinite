@@ -69,9 +69,7 @@ class OrdinalStack(BasicOrdinal):
     # new OrdinalStack instance and compare it with the Ordinal.
 
     def _compare_op(self, other, op):
-        if isinstance(other, int):
-            return False
-        if type(other) is OrdinalStack:
+        try:
             if not self.stack_contains_ordinal and not other.stack_contains_ordinal:
                 return op(self.stack, other.stack)
             else:
@@ -85,13 +83,12 @@ class OrdinalStack(BasicOrdinal):
                 if n == len(self) == len(other):
                     return op(self.stack[-1], other.stack[-1])
                 elif shortest is self:
-                    return op(self.stack[-1], OrdinalStack(other.stack[n-1:]))
+                    return op(self.stack[-1], self.__class__(other.stack[n-1:]))
                 else:
-                    return op(OrdinalStack(self.stack[n-1:]), other.stack[-1])
-        elif type(other) is Ordinal:
+                    return op(self.__class__(self.stack[n-1:]), other.stack[-1])
+        except AttributeError:
+            # assume other is an instance of Ordinal class 
             return op([[self, 1]], other.terms)
-        else:
-            raise TypeError(self._cmp_error_string % (type(self), type(other)))
 
     def __lt__(self, other):
         return self._compare_op(other, operator.lt)
