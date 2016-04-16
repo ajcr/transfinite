@@ -1,6 +1,7 @@
 import unittest
 
 from ordinals import *
+from pyomega import *
 
 
 class TestRichCompareMethods(unittest.TestCase):

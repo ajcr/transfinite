@@ -12,11 +12,11 @@ directly.
 """
 
 import copy
-from functools import reduce, total_ordering
+from functools import total_ordering
 from itertools import islice
 import operator
 
-from algorithms import hi_lo_bisect_right
+from algorithms import hi_lo_bisect_right, product
 from basic import BasicOrdinal
 
 
@@ -318,7 +318,7 @@ class Ordinal(BasicOrdinal):
         # does not scale well).
 
         # TODO: find a formula for finite powers of ordinals.
-        return reduce(operator.mul, (self for _ in range(n)))
+        return product(self for _ in range(n))
 
     def _raise_ordinal_to_single_term_power(self, other):
         if self.index < other.index:
@@ -372,7 +372,7 @@ class Ordinal(BasicOrdinal):
                     a = term[0]
                     b = self._raise_to_integer_power(a)
                 ordinals.append(b)
-            return reduce(operator.mul, ordinals)
+            return product(ordinals)
 
     def __rpow__(self, other):
         if other == 1 or other == 0:
@@ -389,5 +389,5 @@ class Ordinal(BasicOrdinal):
                     a = term[0]
                     b = other ** a
                 ordinals.append(b)
-            return reduce(operator.mul, ordinals)
+            return product(ordinals)
 
