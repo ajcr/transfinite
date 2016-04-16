@@ -391,8 +391,3 @@ class Ordinal(BasicOrdinal):
                 ordinals.append(b)
             return reduce(operator.mul, ordinals)
 
-# useful functions and ordinals
-omega = Ordinal.from_index
-w = omega(0)
-w1 = omega(1)
-
