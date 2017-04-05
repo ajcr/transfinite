@@ -1,16 +1,20 @@
 # py-omega
 
-Transfinite ordinal arithmetic in Python, printed in beautiful LaTeX.
+Learn transfinite ordinal arithmetic in Python.
 
-The infinite made simple. Allows transfinite ordinals to be easily constructed and compared, and then added, multiplied or raised to transfinite powers.
+Construct transfinite ordinals, then compare and combine them using addition, multiplication and exponentiation.
 
 ## Overview
 
-Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the output properly rendered (this makes working with ordinals much, much easier).
+Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the LaTeX output properly rendered.
+
+```python
+from pyomega import *
+```
 
 Here's a quick demonstration...
 
-Create initial ordinals with the `omega` function. Arbitrarily indexes are supported:
+Create initial ordinals with the `omega` function:
 
 ![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals1.png)
 
@@ -23,18 +27,13 @@ You can easily build up the intimidating ordinal shown on [Wikipedia's page for 
 ![alt tag](https://github.com/ajcr/py-omega/blob/master/images/ordinals4.png)
 
 
-Comparison operators also work exactly as they're meant to, so any two ordinals can be compared and any inequality verified.
+Comparison operators also work exactly as they're meant to, so any two ordinals can be compared, and any inequality verified.
 
 
 ## Future
 
-To be implemented soon...
+To be implemented one day soon...
 
 - Veblen hierarchy, large countable ordinals.
 - Visualisation of small countable ordinals (maybe).
-
-To be tidied up soon...
-
-- Some internal methods can be simplified.
-- Eliminate/reduce need for explicit type-checking in methods.
 
