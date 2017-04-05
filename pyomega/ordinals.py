@@ -16,8 +16,8 @@ from functools import total_ordering
 from itertools import islice
 import operator
 
-from algorithms import hi_lo_bisect_right, product
-from basic import BasicOrdinal
+from .algorithms import hi_lo_bisect_right, product
+from .basic import BasicOrdinal
 
 
 @total_ordering

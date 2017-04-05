@@ -1,4 +1,4 @@
-from ordinals import Ordinal
+from .ordinals import Ordinal
 
 # useful to allow expose this  constructor method
 # as a function, allowing limit ordinals to be
