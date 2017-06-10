@@ -1,9 +1,9 @@
 from setuptools import setup
 
-setup(name='pyomega',
+setup(name='transfinite',
       version='0.1',
       description='Transfinite ordinals for Python',
       author='Alex Riley',
       license='MIT',
-      packages=['pyomega'],
+      packages=['transfinite'],
       zip_safe=False)

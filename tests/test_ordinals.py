@@ -1,8 +1,8 @@
 import unittest
 
-from pyomega import *
-from pyomega.basic import BasicOrdinal
-from pyomega.ordinals import OrdinalStack
+from transfinite import *
+from transfinite.basic import BasicOrdinal
+from transfinite.ordinals import OrdinalStack
 
 
 class TestRichCompareMethods(unittest.TestCase):

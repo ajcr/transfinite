@@ -1,7 +1,5 @@
 # py-omega
 
-Learn transfinite ordinal arithmetic in Python.
-
 Construct transfinite ordinals, then compare and combine them using addition, multiplication and exponentiation.
 
 ## Overview
@@ -9,7 +7,7 @@ Construct transfinite ordinals, then compare and combine them using addition, mu
 Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the LaTeX output properly rendered.
 
 ```python
-from pyomega import *
+from transfinite import *
 ```
 
 Here's a quick demonstration...
