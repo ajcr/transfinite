@@ -1,6 +1,6 @@
 # transfinite
 
-`transfinite` introduces transfinite ordinals to Python. These ordinal objects interact naturally with Python's positive integers (finite ordinals) and support fundamental arithmetic operations. Ordinals are printed in LaTeX for easy reading. It's a useful tool for getting more of an inuition about the basics of infinite ordinals.
+`transfinite` introduces transfinite ordinals to Python. These ordinal objects interact naturally with Python's positive integers (finite ordinals) and support fundamental arithmetic operations. Ordinals are printed in LaTeX for easy reading. It's a useful tool for developing an intuition about the basics of infinite ordinals.
 
 Work to `transfinite` is ongoing, meaning that features may be added or the interface may be changed. The simple core of the module should be preserved, however.
 
@@ -12,7 +12,7 @@ To install, clone the repository (e.g. `git clone https://github.com/ajcr/transf
 
 ## Usage
 
-Here's a quick demonstration showing arithmetic with the first transfinite ordinal, omega:
+Here's a quick demonstration showing arithmetic with the first transfinite ordinal, omega (denoted as `w`):
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/omega_demo.png)
 
