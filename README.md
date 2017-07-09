@@ -12,6 +12,8 @@ To install, clone the repository (e.g. `git clone https://github.com/ajcr/transf
 
 ## Usage
 
+For a very basic introduction to ordinal arithmetic, look at the notebook [here](https://github.com/ajcr/transfinite/blob/master/notebooks/ordinal_arithmetic_basics.ipynb).
+
 Here's a quick demonstration showing arithmetic with the first transfinite ordinal, omega (denoted as `w`):
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/omega_demo.png)
