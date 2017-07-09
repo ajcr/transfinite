@@ -1,37 +1,25 @@
 # transfinite
 
-Construct transfinite ordinals, then compare and combine them using addition, multiplication and exponentiation.
+`transfinite` introduces transfinite ordinals to Python. These ordinal objects interact naturally with Python's positive integers (finite ordinals) and support fundamental arithmetic operations. Ordinals are printed in LaTeX for easy reading. It's a useful tool for getting more of an inuition about the basics of infinite ordinals.
 
-## Overview
+Work to `transfinite` is ongoing, meaning that features may be added or the interface may be changed. The simple core of the module should be preserved, however.
 
-Works with Python 3.2 and higher. Use a Jupyter/IPython notebook/qtconsole to have the LaTeX output properly rendered.
+## Installation
 
-```python
-from transfinite import *
-```
+Works with Python 3.2 and higher. Use of the Jupyter/IPython notebook/qtconsole is highly recommended so that LaTeX output is properly displayed.
 
-Here's a quick demonstration...
+To install, clone the repository (e.g. `git clone https://github.com/ajcr/transfinite.git`), navigate to the new directory and run `python setup.py install`.
 
-Create initial ordinals with the `omega` function:
+## Usage
 
-![alt tag](https://github.com/ajcr/transfinite/blob/master/images/ordinals1.png)
+Here's a quick demonstration showing arithmetic with the first transfinite ordinal, omega:
 
-Perform arithmetic to build more complicated ordinals. All ordinals are represented in Cantor normal form:
-
-![alt tag](https://github.com/ajcr/transfinite/blob/master/images/ordinals2.png)
-
-You can easily build up the intimidating ordinal shown on [Wikipedia's page for ordinal arithmetic](https://en.wikipedia.org/wiki/Ordinal_arithmetic#Cantor_normal_form)... and then use it in calculations:
-
-![alt tag](https://github.com/ajcr/transfinite/blob/master/images/ordinals4.png)
-
-
-Comparison operators also work exactly as they're meant to, so any two ordinals can be compared, and any inequality verified.
-
+![alt tag](https://github.com/ajcr/transfinite/blob/master/images/omega_demo.png)
 
 ## Future
 
-To be implemented one day soon...
+To be implemented one day soon:
 
-- Veblen hierarchy, large countable ordinals.
-- Visualisation of small countable ordinals (maybe).
+- The Veblen function and some larger countable ordinals.
+- A method to visualise countable ordinals.
 
