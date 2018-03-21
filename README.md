@@ -16,7 +16,7 @@ For a very basic introduction to ordinal arithmetic, look at the notebook [here]
 
 Here's a quick demonstration showing arithmetic with the first transfinite ordinal, omega (denoted as `w`):
 
-![alt tag](https://github.com/ajcr/transfinite/blob/master/images/omega_demo.png)
+![alt tag](https://github.com/ajcr/transfinite/blob/master/images/transfinite_demo.png)
 
 ## Future
 
