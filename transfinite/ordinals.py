@@ -239,7 +239,7 @@ class Ordinal(BasicOrdinal):
                 raise ValueError("can only add positive integers to ordinal")
             terms = self.terms[:]
             if self.is_successor:
-                terms[-1][0] += other
+                terms[-1] = [terms[-1][0] + other]
             else:
                 terms.append([other])
             return Ordinal(terms)
