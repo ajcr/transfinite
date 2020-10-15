@@ -9,35 +9,6 @@ def _term_as_latex_string(ordinal):
         ordinal = ordinal.exponent
     return
 
-
-def is_less_than(left, right) -> bool:
-
-    if isinstance(left, int) and isinstance(right, int):
-        return left < right
-
-    elif isinstance(left, int):
-        return True
-
-    elif isinstance(right, int):
-        return False
-
-    return left < right
-
-
-def is_equal_to(left, right) -> bool:
-
-    if isinstance(left, int) and isinstance(right, int):
-        return left == right
-
-    elif isinstance(left, int):
-        return False
-
-    elif isinstance(right, int):
-        return False
-
-    return left == right
-
-
 def as_cnf_terms(ordinal) -> List:
     """
     Return a list of terms for the ordinal:
@@ -124,9 +95,9 @@ class Ordinal:
             return False
 
         return (
-            is_equal_to(self.exponent, other.exponent) and
-            is_equal_to(self.coefficient, other.coefficient) and
-            is_equal_to(self.addend, other.addend)
+            self.exponent == other.exponent and
+            self.coefficient == other.coefficient and
+            self.addend == other.addend
         )
 
     def __lt__(self, other):
@@ -138,9 +109,23 @@ class Ordinal:
             return False
 
         return (
-            is_less_than(self.exponent, other.exponent) or
-            is_less_than(self.coefficient, other.coefficient) or
-            is_less_than(self.addend, other.addend)
+            self.exponent < other.exponent or
+            self.coefficient < other.coefficient or
+            self.addend < other.addend
+        )
+
+    def __gt__(self, other):
+
+        if not isinstance(other, type(self)):
+            return True
+
+        if isinstance(other, int):
+            return True
+
+        return (
+            self.exponent > other.exponent or
+            self.coefficient > other.coefficient or
+            self.addend > other.addend
         )
 
     def __add__(self, other):

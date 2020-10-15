@@ -1,26 +1,11 @@
 import pytest
 
-from .omega import Ordinal, w, is_equal_to
+from .omega import Ordinal, w
 
 
 
 #def test_as_exponent_terms(ordinal):
 #    assert as_exponent_terms(ordinal) == expected
-
-
-@pytest.mark.parametrize(
-    "a",
-    [
-        5,
-        Ordinal(),
-        Ordinal(exponent=2),
-        Ordinal(exponent=Ordinal()),
-        Ordinal(exponent=2, coefficient=5),
-        Ordinal(exponent=2, addend=Ordinal()),
-    ],
-)
-def test_is_equal_to(a):
-    assert is_equal_to(a, a)
 
 
 @pytest.mark.parametrize(
