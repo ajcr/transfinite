@@ -2,6 +2,10 @@ from copy import deepcopy
 from functools import total_ordering
 
 
+def is_non_negative_int(n):
+    return n >= 0 and isinstance(n, int)
+
+
 @total_ordering
 class Ordinal:
     r"""
@@ -34,37 +38,41 @@ class Ordinal:
         return term
 
     def __eq__(self, other):
-        if not isinstance(other, type(self)):
+        try:
+            return (
+                self.exponent == other.exponent and
+                self.coefficient == other.coefficient and
+                self.addend == other.addend
+            )
+        except AttributeError:
             return False
-
-        return (
-            self.exponent == other.exponent and
-            self.coefficient == other.coefficient and
-            self.addend == other.addend
-        )
 
     def __lt__(self, other):
-        if not isinstance(other, type(self)) or isinstance(other, int):
+        if is_non_negative_int(other):
             return False
-
-        return (
-            self.exponent < other.exponent or
-            self.coefficient < other.coefficient or
-            self.addend < other.addend
-        )
+        try:
+            return (
+                self.exponent < other.exponent or
+                self.coefficient < other.coefficient or
+                self.addend < other.addend
+            )
+        except AttributeError:
+            raise NotImplemented
 
     def __gt__(self, other):
-        if not isinstance(other, type(self)) or isinstance(other, int):
+        if is_non_negative_int(other):
             return True
-
-        return (
-            self.exponent > other.exponent or
-            self.coefficient > other.coefficient or
-            self.addend > other.addend
-        )
+        try:
+            return (
+                self.exponent > other.exponent or
+                self.coefficient > other.coefficient or
+                self.addend > other.addend
+            )
+        except AttributeError:
+            raise NotImplemented
 
     def __add__(self, other):
-        if isinstance(other, int) or self.exponent > other.exponent:
+        if is_non_negative_int(other) or self.exponent > other.exponent:
             return Ordinal(
                 exponent=deepcopy(self.exponent),
                 coefficient=deepcopy(self.coefficient),
@@ -87,7 +95,7 @@ class Ordinal:
         return deepcopy(other)
 
     def __radd__(self, other):
-        if isinstance(other, int):
+        if is_non_negative_int(other):
             return deepcopy(self)
         raise NotImplemented
 
