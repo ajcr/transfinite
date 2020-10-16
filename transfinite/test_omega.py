@@ -100,8 +100,6 @@ def test_greater_than(a, b):
 @pytest.mark.parametrize(
     "a,expected",
     [
-        # 12377
-        (12377, "12377"),
         # w
         (Ordinal(), r"\omega"),
         # w^5
@@ -113,7 +111,8 @@ def test_greater_than(a, b):
         # w^(w^5 + w.3 + 66) . 5
         (
             Ordinal(
-                exponent=Ordinal(exponent=5, addend=Ordinal(coefficient=3, addend=66)), coefficient=5
+                exponent=Ordinal(exponent=5, addend=Ordinal(coefficient=3, addend=66)),
+                coefficient=5,
             ),
             r"\omega^{\omega^{5}+\omega\cdot3+66}\cdot5",
         ),

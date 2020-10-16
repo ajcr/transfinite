@@ -90,7 +90,23 @@ class Ordinal:
         return rf"${self}$"
 
     def __str__(self):
-        return as_latex_string(self)
+
+        exp = str(self.exponent)
+        coeff = str(self.coefficient)
+        add = str(self.addend)
+
+        term = r"\omega"
+
+        if exp != "1":
+            term += f"^{{{exp}}}"
+
+        if coeff != "1":
+            term += rf"\cdot{coeff}"
+
+        if add != "0":
+            term += f"+{add}"
+
+        return term
 
     def __eq__(self, other):
 
