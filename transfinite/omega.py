@@ -44,28 +44,6 @@ def as_exponent_terms(ordinal) -> List:
     return terms
 
 
-def as_latex_string(ordinal) -> str:
-    if isinstance(ordinal, int):
-        return str(ordinal) 
-
-    exp = as_latex_string(ordinal.exponent)
-    coeff = as_latex_string(ordinal.coefficient)
-    add = as_latex_string(ordinal.addend)
-
-    term = r"\omega"
-
-    if exp != "1":
-        term += f"^{{{exp}}}"
-
-    if coeff != "1":
-        term += rf"\cdot{coeff}"
-
-    if add != "0":
-        term += f"+{add}"
-
-    return term
-
-
 @total_ordering
 class Ordinal:
     r"""
@@ -90,21 +68,16 @@ class Ordinal:
         return rf"${self}$"
 
     def __str__(self):
-
-        exp = str(self.exponent)
-        coeff = str(self.coefficient)
-        add = str(self.addend)
-
         term = r"\omega"
 
-        if exp != "1":
-            term += f"^{{{exp}}}"
+        if self.exponent != 1:
+            term += f"^{{{self.exponent}}}"
 
-        if coeff != "1":
-            term += rf"\cdot{coeff}"
+        if self.coefficient != 1:
+            term += rf"\cdot{self.coefficient}"
 
-        if add != "0":
-            term += f"+{add}"
+        if self.addend != 0:
+            term += f"+{self.addend}"
 
         return term
 
