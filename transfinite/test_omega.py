@@ -110,6 +110,13 @@ def test_greater_than(a, b):
         (Ordinal(exponent=Ordinal()), r"\omega^{\omega}"),
         # w + 99
         (Ordinal(addend=99), r"\omega+99"),
+        # w^(w^5 + w.3 + 66) . 5
+        (
+            Ordinal(
+                exponent=Ordinal(exponent=5, addend=Ordinal(coefficient=3, addend=66)), coefficient=5
+            ),
+            r"\omega^{\omega^{5}+\omega\cdot3+66}\cdot5",
+        ),
     ],
 )
 def test_as_latex_string(a, expected):

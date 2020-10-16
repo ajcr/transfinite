@@ -79,7 +79,6 @@ class Ordinal:
         
     def head(self):
         return self.__class__(
-            #copy.deepcopy(self.exponent),
             self.exponent,
             self.coefficient,
         )
@@ -127,13 +126,7 @@ class Ordinal:
         )
 
     def __add__(self, other):
-        if isinstance(other, int):
-            return add_finite_integer(self, other)
-
-        head = self
-
-        while head.exponent != other:
-            return head
+        return
 
     def __radd__(self, other):
         return other + self
