@@ -1,11 +1,11 @@
+import copy
 from functools import total_ordering
-from typing import List
 
 
 @total_ordering
 class Ordinal:
     r"""
-    An ordinal less than \epsilon_0 in CNF.
+    An infinite ordinal less than \epsilon_0.
 
     """
     def __init__(self, exponent=1, coefficient=1, addend=0):
@@ -13,11 +13,11 @@ class Ordinal:
         self.coefficient = coefficient
         self.addend = addend
         
-    def __repr__(self):
-        return str(self)
-
     def _repr_latex_(self):
         return rf"${self}$"
+
+    def __repr__(self):
+        return str(self).replace(r"\omega", "w").replace(r"\cdot", "*")
 
     def __str__(self):
         term = r"\omega"
@@ -34,7 +34,6 @@ class Ordinal:
         return term
 
     def __eq__(self, other):
-
         if not isinstance(other, type(self)):
             return False
 
@@ -45,7 +44,6 @@ class Ordinal:
         )
 
     def __lt__(self, other):
-
         if not isinstance(other, type(self)) or isinstance(other, int):
             return False
 
@@ -56,7 +54,6 @@ class Ordinal:
         )
 
     def __gt__(self, other):
-
         if not isinstance(other, type(self)) or isinstance(other, int):
             return True
 
@@ -67,10 +64,39 @@ class Ordinal:
         )
 
     def __add__(self, other):
-        return
+
+        if isinstance(other, int):
+            return Ordinal(
+                exponent=copy.deepcopy(self.exponent),
+                coefficient=copy.deepcopy(self.coefficient),
+                addend=self.addend + other,
+            )
+
+        if self.exponent > other.exponent:
+            return Ordinal(
+                exponent=copy.deepcopy(self.exponent),
+                coefficient=copy.deepcopy(self.coefficient),
+                addend=self.addend + other,
+            )
+
+        elif self.exponent == other.exponent:
+            if isinstance(self.addend, int):
+                addend = other.addend
+            else:
+                addend = self.addend + other.addend
+
+            return Ordinal(
+                exponent=copy.deepcopy(self.exponent),
+                coefficient=self.coefficient + other.coefficient,
+                addend=addend,
+            )
+
+        return copy.deepcopy(other)
 
     def __radd__(self, other):
-        return other + self
+        if isinstance(other, int):
+            return copy.deepcopy(self)
+        raise NotImplemented
 
     def __mul__(self, other):
         return
