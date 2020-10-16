@@ -2,48 +2,6 @@ from functools import total_ordering
 from typing import List
 
 
-def as_cnf_terms(ordinal) -> List:
-    """
-    Return a list of terms for the ordinal:
-
-      w^w + w^7 + 3 -> [w^w, w^7, 3]
-      w.2 + 5       -> [w.2, 5]
-
-    """
-    terms = [ordinal.head()]
-    
-    while ordinal.addend != 0:
-        try:
-            ordinal = ordinal.addend
-        except AttributeError:
-            terms.append(ordinal)
-            break
-        terms.append(ordinal.head())
-
-    return terms
-
-def as_exponent_terms(ordinal) -> List:
-    """
-    Return a list of terms for the exponent tower:
-
-      w^w^(w+1)     -> [w, w, w+1]
-      w^w^(w^2 + 1) -> [w, w, w^2 + 1]
-
-    Note that any addend of the ordinal is ignored.
-    """
-    terms = [ordinal.coeffient]
-    exponent = ordinal.exponent
-    
-    while True:
-        exponent = exponent.exponent
-        if isinstance(ordinal, int):
-            terms.append(ordinal.exponent)
-            break
-        terms.append(ordinal.head())
-
-    return terms
-
-
 @total_ordering
 class Ordinal:
     r"""
@@ -55,12 +13,6 @@ class Ordinal:
         self.coefficient = coefficient
         self.addend = addend
         
-    def head(self):
-        return self.__class__(
-            self.exponent,
-            self.coefficient,
-        )
-
     def __repr__(self):
         return str(self)
 
