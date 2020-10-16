@@ -59,7 +59,18 @@ def as_latex_string(ordinal) -> str:
     coeff = as_latex_string(ordinal.coefficient)
     add = as_latex_string(ordinal.addend)
 
-    return rf"\omega^{{{exp}}} \cdot {coeff} + {add}"
+    term = r"\omega"
+
+    if exp != "1":
+        term += f"^{{{exp}}}"
+
+    if coeff != "1":
+        term += rf"\cdot{coeff}"
+
+    if add != "0":
+        term += f"+{add}"
+
+    return term
 
 
 @total_ordering
