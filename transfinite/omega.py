@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 from functools import total_ordering
 
 
@@ -66,29 +66,29 @@ class Ordinal:
     def __add__(self, other):
         if isinstance(other, int) or self.exponent > other.exponent:
             return Ordinal(
-                exponent=copy.deepcopy(self.exponent),
-                coefficient=copy.deepcopy(self.coefficient),
+                exponent=deepcopy(self.exponent),
+                coefficient=deepcopy(self.coefficient),
                 addend=self.addend + other,
             )
 
         elif self.exponent == other.exponent:
 
             if isinstance(self.addend, int):
-                new_addend = copy.deepcopy(other.addend)
+                new_addend = deepcopy(other.addend)
             else:
                 new_addend = self.addend + other.addend
 
             return Ordinal(
-                exponent=copy.deepcopy(self.exponent),
+                exponent=deepcopy(self.exponent),
                 coefficient=self.coefficient + other.coefficient,
                 addend=new_addend,
             )
 
-        return copy.deepcopy(other)
+        return deepcopy(other)
 
     def __radd__(self, other):
         if isinstance(other, int):
-            return copy.deepcopy(self)
+            return deepcopy(self)
         raise NotImplemented
 
     def __mul__(self, other):
