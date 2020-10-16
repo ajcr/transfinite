@@ -2,13 +2,6 @@ from functools import total_ordering
 from typing import List
 
 
-def _term_as_latex_string(ordinal):
-    exponent_tower = []
-    while ordinal.exponent != 1:
-        exponent_tower.append(())
-        ordinal = ordinal.exponent
-    return
-
 def as_cnf_terms(ordinal) -> List:
     """
     Return a list of terms for the ordinal:
@@ -113,10 +106,7 @@ class Ordinal:
 
     def __lt__(self, other):
 
-        if not isinstance(other, type(self)):
-            return False
-
-        if isinstance(other, int):
+        if not isinstance(other, type(self)) or isinstance(other, int):
             return False
 
         return (
@@ -127,10 +117,7 @@ class Ordinal:
 
     def __gt__(self, other):
 
-        if not isinstance(other, type(self)):
-            return True
-
-        if isinstance(other, int):
+        if not isinstance(other, type(self)) or isinstance(other, int):
             return True
 
         return (
@@ -162,6 +149,3 @@ class Ordinal:
 
     def __rpow__(self, other):
         return other ** self
-
-
-w = Ordinal()
