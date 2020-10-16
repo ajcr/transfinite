@@ -64,15 +64,7 @@ class Ordinal:
         )
 
     def __add__(self, other):
-
-        if isinstance(other, int):
-            return Ordinal(
-                exponent=copy.deepcopy(self.exponent),
-                coefficient=copy.deepcopy(self.coefficient),
-                addend=self.addend + other,
-            )
-
-        if self.exponent > other.exponent:
+        if isinstance(other, int) or self.exponent > other.exponent:
             return Ordinal(
                 exponent=copy.deepcopy(self.exponent),
                 coefficient=copy.deepcopy(self.coefficient),
@@ -80,15 +72,16 @@ class Ordinal:
             )
 
         elif self.exponent == other.exponent:
+
             if isinstance(self.addend, int):
-                addend = other.addend
+                new_addend = copy.deepcopy(other.addend)
             else:
-                addend = self.addend + other.addend
+                new_addend = self.addend + other.addend
 
             return Ordinal(
                 exponent=copy.deepcopy(self.exponent),
                 coefficient=self.coefficient + other.coefficient,
-                addend=addend,
+                addend=new_addend,
             )
 
         return copy.deepcopy(other)
