@@ -135,6 +135,16 @@ class Ordinal:
         raise NotImplemented
 
     def __pow__(self, other):
+        if other == 0:
+            return 1
+
+        if is_non_negative_int(other):
+            return Ordinal(
+                exponent=self.exponent * other,
+                coefficient=self.coefficient,
+                addend=self.addend * self,
+            )
+
         return
 
     def __rpow__(self, other):

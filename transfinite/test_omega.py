@@ -242,7 +242,26 @@ def test_addition(a, b, expected):
             Ordinal(coefficient=3),
             Ordinal(exponent=2, coefficient=3),
         ),
+        # (w + 1) * (w^2) == w^3
+        (Ordinal(addend=1), Ordinal(exponent=2), Ordinal(exponent=3)),
     ],
 )
 def test_multiplication(a, b, expected):
     assert a * b == expected
+
+
+@pytest.mark.parametrize(
+    "a,b,expected",
+    [
+        # (w) ** 0 == 0
+        (Ordinal(), 0, 1),
+        # (w) ** 1 == w
+        (Ordinal(), 1, Ordinal()),
+        # (w) ** 2 == w^2
+        (Ordinal(exponent=2), 2, Ordinal(exponent=4)),
+        # (w + 1) ** 2 == w^2 + w + 1
+        (Ordinal(addend=1), 2, Ordinal(exponent=2, addend=Ordinal(addend=1))),
+    ],
+)
+def test_power(a, b, expected):
+    assert a ** b == expected
