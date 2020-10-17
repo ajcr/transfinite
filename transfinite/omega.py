@@ -21,7 +21,18 @@ class Ordinal:
         return rf"${self}$"
 
     def __repr__(self):
-        return str(self).replace(r"\omega", "w").replace(r"\cdot", "*")
+        term = "w"
+
+        if self.exponent != 1:
+            term += f"^({self.exponent})"
+
+        if self.coefficient != 1:
+            term += rf"*{self.coefficient}"
+
+        if self.addend != 0:
+            term += f" + {self.addend}"
+
+        return f"({term})"
 
     def __str__(self):
         term = r"\omega"
@@ -75,7 +86,7 @@ class Ordinal:
         if is_non_negative_int(other) or self.exponent > other.exponent:
             return Ordinal(
                 exponent=deepcopy(self.exponent),
-                coefficient=deepcopy(self.coefficient),
+                coefficient=self.coefficient,
                 addend=self.addend + other,
             )
 
@@ -100,10 +111,28 @@ class Ordinal:
         raise NotImplemented
 
     def __mul__(self, other):
-        return
+        if other == 0:
+            return 0
+
+        if is_non_negative_int(other):
+            return Ordinal(
+                exponent=deepcopy(self.exponent),
+                coefficient=self.coefficient * other,
+                addend=deepcopy(self.addend),
+            )
+
+        return Ordinal(
+            exponent=self.exponent + other.exponent,
+            coefficient=other.coefficient,
+            addend=self.addend * other.addend + self * other.addend,
+        )
 
     def __rmul__(self, other):
-        return other * self
+        if other == 0:
+            return 0
+        elif is_non_negative_int(other):
+            return deepcopy(self)
+        raise NotImplemented
 
     def __pow__(self, other):
         return

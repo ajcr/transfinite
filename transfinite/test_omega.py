@@ -125,6 +125,10 @@ def test_as_latex_string(a, expected):
 @pytest.mark.parametrize(
     "a,b,expected",
     [
+        # (w) + 0 == w
+        (Ordinal(), 0, Ordinal()),
+        # 0 + (w) == w
+        (0, Ordinal(), Ordinal()),
         # (w) + 1 == w + 1
         (Ordinal(), 1, Ordinal(addend=1)),
         # (w^3 + w) + 2 == w^3 + w + 2
@@ -175,3 +179,70 @@ def test_as_latex_string(a, expected):
 )
 def test_addition(a, b, expected):
     assert a + b == expected
+
+
+@pytest.mark.parametrize(
+    "a,b,expected",
+    [
+        # (w) * 0 == 0
+        (Ordinal(), 0, 0),
+        # 0 * (w) == 0
+        (0, Ordinal(), 0),
+        # (w) * 1 == w
+        (Ordinal(), 1, Ordinal()),
+        # (w) * 2 == w.2
+        (Ordinal(), 2, Ordinal(coefficient=2)),
+        # 2 * (w) == w
+        (2, Ordinal(), Ordinal()),
+        # (w + 1) * 2 == w.2 + 1
+        (Ordinal(addend=1), 2, Ordinal(coefficient=2, addend=1)),
+        # (w + 9) * 2 == w.2 + 9
+        (Ordinal(addend=1), 2, Ordinal(coefficient=2, addend=1)),
+        # (w) * (w) == w^2
+        (Ordinal(), Ordinal(), Ordinal(exponent=2)),
+        # (w) * (w + 1) == w^2 + w
+        (Ordinal(), Ordinal(addend=1), Ordinal(exponent=2, addend=Ordinal())),
+        # (w + 1) * (w + 1) == w^2 + w + 1
+        (Ordinal(addend=1), Ordinal(addend=1), Ordinal(exponent=2, addend=Ordinal(addend=1))),
+        # (w.3) * (w.3) == w^2.3
+        (Ordinal(coefficient=3), Ordinal(coefficient=3), Ordinal(exponent=2, coefficient=3)),
+        # (w^5) * (w) == w^6
+        (Ordinal(exponent=5), Ordinal(), Ordinal(exponent=6)),
+        # (w^2) * (w^4) == w^8
+        (Ordinal(exponent=2), Ordinal(exponent=7), Ordinal(exponent=9)),
+        # (w + 5) * (w + 2) == w^2 + w*2 + 5
+        (
+            Ordinal(addend=5),
+            Ordinal(addend=2),
+            Ordinal(exponent=2, addend=Ordinal(coefficient=2, addend=5)),
+        ),
+        # (w^2 + w + 1) * (w.2 + 2) == w^3.2 + w^2.2 + w + 1
+        (
+            Ordinal(exponent=2, addend=Ordinal(addend=1)),
+            Ordinal(coefficient=2, addend=2),
+            Ordinal(
+                exponent=3,
+                coefficient=2,
+                addend=Ordinal(exponent=2, coefficient=2, addend=Ordinal(addend=1))
+            ),
+        ),
+        # (w^w) * (w) == w^(w+1)
+        (Ordinal(exponent=Ordinal()), Ordinal(), Ordinal(exponent=Ordinal(addend=1))),
+        # (w^w) * (w+2) == w^(w+1) + w^w.2
+        (
+            Ordinal(exponent=Ordinal()),
+            Ordinal(addend=2),
+            Ordinal(exponent=Ordinal(addend=1), addend=Ordinal(exponent=Ordinal(), coefficient=2)),
+        ),
+        # 3 * (w.2 + 4) == w.2 + 4
+        (3, Ordinal(coefficient=2, addend=4), Ordinal(coefficient=2, addend=4)),
+        # (w.3 + 4) * (w.3) == w^2.3
+        (
+            Ordinal(coefficient=3, addend=4),
+            Ordinal(coefficient=3),
+            Ordinal(exponent=2, coefficient=3),
+        ),
+    ],
+)
+def test_multiplication(a, b, expected):
+    assert a * b == expected
