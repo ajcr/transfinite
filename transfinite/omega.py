@@ -79,19 +79,17 @@ class Ordinal:
             raise NotImplemented
 
     def __add__(self, other):
-        if is_non_negative_int(other) or self.exponent > other.exponent:
-            return Ordinal(
-                self.exponent,
-                self.coefficient,
-                self.addend + other,
-            )
-        elif self.exponent == other.exponent:
-
+        try:
+            if is_non_negative_int(other) or self.exponent > other.exponent:
+                return Ordinal(self.exponent, self.coefficient, self.addend + other)
+        except AttributeError:
+            raise NotImplemented
+        if self.exponent == other.exponent:
+            # if both addends are integers, new addend should not include self.addend
             if isinstance(self.addend, int):
                 new_addend = other.addend
             else:
                 new_addend = self.addend + other.addend
-
             return Ordinal(
                 self.exponent,
                 self.coefficient + other.coefficient,
@@ -108,11 +106,7 @@ class Ordinal:
         if other == 0:
             return 0
         if is_non_negative_int(other):
-            return Ordinal(
-                self.exponent,
-                self.coefficient * other,
-                self.addend,
-            )
+            return Ordinal(self.exponent, self.coefficient * other, self.addend)
         try:
             return Ordinal(
                 self.exponent + other.exponent,
@@ -126,28 +120,16 @@ class Ordinal:
         if other == 0:
             return 0
         if is_non_negative_int(other):
-            return Ordinal(
-                self.exponent,
-                self.coefficient,
-                other * self.addend,
-            )
+            return Ordinal(self.exponent, self.coefficient, other * self.addend)
         raise NotImplemented
 
     def __pow__(self, other):
         if other == 0:
             return 1
         if is_non_negative_int(other):
-            return Ordinal(
-                self.exponent * other,
-                self.coefficient,
-                self.addend * self,
-            )
+            return Ordinal(self.exponent * other, self.coefficient, self.addend * self)
         try:
-            return Ordinal(
-                self.exponent * other,
-                1,
-                0,
-            )
+            return Ordinal(self.exponent * other, 1, 0)
         except AttributeError:
             raise NotImplemented
 
@@ -155,9 +137,5 @@ class Ordinal:
         if other == 0:
             return 0
         if is_non_negative_int(other):
-            return Ordinal(
-                self.exponent * self.coefficient,
-                other ** self.addend,
-                0,
-            )
+            return Ordinal(self.exponent * self.coefficient, other ** self.addend)
         raise NotImplemented
