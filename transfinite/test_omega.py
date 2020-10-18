@@ -31,7 +31,7 @@ def test_equals(a):
         (Ordinal(), Ordinal(coefficient=2)),
         # w == w + 2
         (Ordinal(), Ordinal(addend=2)),
-    ]
+    ],
 )
 def test_not_equals(a, b):
     assert a != b
@@ -55,11 +55,20 @@ def test_not_equals(a, b):
         # w^3 < w^w
         (Ordinal(exponent=3), Ordinal(exponent=Ordinal())),
         # w^(w+1) < w^w^w
-        (Ordinal(exponent=Ordinal(addend=1)), Ordinal(exponent=Ordinal(exponent=Ordinal()))),
+        (
+            Ordinal(exponent=Ordinal(addend=1)),
+            Ordinal(exponent=Ordinal(exponent=Ordinal())),
+        ),
         # w^(w.100) < w^w^w
-        (Ordinal(exponent=Ordinal(coefficient=100)), Ordinal(exponent=Ordinal(exponent=Ordinal()))),
+        (
+            Ordinal(exponent=Ordinal(coefficient=100)),
+            Ordinal(exponent=Ordinal(exponent=Ordinal())),
+        ),
         # w^w^2 < w^w^w
-        (Ordinal(exponent=Ordinal(exponent=2)), Ordinal(exponent=Ordinal(exponent=Ordinal()))),
+        (
+            Ordinal(exponent=Ordinal(exponent=2)),
+            Ordinal(exponent=Ordinal(exponent=Ordinal())),
+        ),
         # w^(w+2) + w.3 < w^(w+3)
         (
             Ordinal(exponent=Ordinal(addend=2), addend=Ordinal(coefficient=3)),
@@ -144,7 +153,11 @@ def test_as_latex_string(a, expected):
         # (w) + (w) == w.2
         (Ordinal(), Ordinal(), Ordinal(coefficient=2)),
         # (w.12 + 2) + (w.7) == w.19
-        (Ordinal(coefficient=12, addend=2), Ordinal(coefficient=7), Ordinal(coefficient=19)),
+        (
+            Ordinal(coefficient=12, addend=2),
+            Ordinal(coefficient=7),
+            Ordinal(coefficient=19),
+        ),
         # (w^2 + w + 2) + 2 == w^2 + w + 4
         (
             Ordinal(exponent=2, addend=Ordinal(addend=2)),
@@ -205,7 +218,11 @@ def test_addition(a, b, expected):
         # (w) * (w + 1) == w^2 + w
         (Ordinal(), Ordinal(addend=1), Ordinal(exponent=2, addend=Ordinal())),
         # (w + 1) * (w + 1) == w^2 + w + 1
-        (Ordinal(addend=1), Ordinal(addend=1), Ordinal(exponent=2, addend=Ordinal(addend=1))),
+        (
+            Ordinal(addend=1),
+            Ordinal(addend=1),
+            Ordinal(exponent=2, addend=Ordinal(addend=1)),
+        ),
         # (w^2 + w + 1) * (w + 1) == w^3 + w^2 + w + 1
         (
             Ordinal(exponent=2, addend=Ordinal(addend=1)),
@@ -213,7 +230,11 @@ def test_addition(a, b, expected):
             Ordinal(exponent=3, addend=Ordinal(exponent=2, addend=Ordinal(addend=1))),
         ),
         # (w.3) * (w.3) == w^2.3
-        (Ordinal(coefficient=3), Ordinal(coefficient=3), Ordinal(exponent=2, coefficient=3)),
+        (
+            Ordinal(coefficient=3),
+            Ordinal(coefficient=3),
+            Ordinal(exponent=2, coefficient=3),
+        ),
         # (w^5) * (w) == w^6
         (Ordinal(exponent=5), Ordinal(), Ordinal(exponent=6)),
         # (w^2) * (w^4) == w^8
@@ -231,7 +252,7 @@ def test_addition(a, b, expected):
             Ordinal(
                 exponent=3,
                 coefficient=2,
-                addend=Ordinal(exponent=2, coefficient=2, addend=Ordinal(addend=1))
+                addend=Ordinal(exponent=2, coefficient=2, addend=Ordinal(addend=1)),
             ),
         ),
         # (w^w) * (w) == w^(w+1)
@@ -240,7 +261,10 @@ def test_addition(a, b, expected):
         (
             Ordinal(exponent=Ordinal()),
             Ordinal(addend=2),
-            Ordinal(exponent=Ordinal(addend=1), addend=Ordinal(exponent=Ordinal(), coefficient=2)),
+            Ordinal(
+                exponent=Ordinal(addend=1),
+                addend=Ordinal(exponent=Ordinal(), coefficient=2),
+            ),
         ),
         # 3 * (w.2 + 4) == w.2 + 12
         (3, Ordinal(coefficient=2, addend=4), Ordinal(coefficient=2, addend=12)),
@@ -273,8 +297,6 @@ def test_multiplication(a, b, expected):
         (Ordinal(addend=1), 2, Ordinal(exponent=2, addend=Ordinal(addend=1))),
         # (w + 1) ** w == w^w
         (Ordinal(addend=1), Ordinal(), Ordinal(exponent=Ordinal())),
-
-
         # 2 ** (w) == w
         (2, Ordinal(), Ordinal()),
         # 2 ** (w.6) == w^6
