@@ -11,11 +11,12 @@ class Ordinal:
     An infinite ordinal less than \epsilon_0.
 
     """
+
     def __init__(self, exponent=1, coefficient=1, addend=0):
         self.exponent = exponent
         self.coefficient = coefficient
         self.addend = addend
-        
+
     def _repr_latex_(self):
         return rf"${self}$"
 
@@ -46,9 +47,9 @@ class Ordinal:
     def __eq__(self, other):
         try:
             return (
-                self.exponent == other.exponent and
-                self.coefficient == other.coefficient and
-                self.addend == other.addend
+                self.exponent == other.exponent
+                and self.coefficient == other.coefficient
+                and self.addend == other.addend
             )
         except AttributeError:
             return False
@@ -58,9 +59,9 @@ class Ordinal:
             return False
         try:
             return (
-                self.exponent < other.exponent or
-                self.coefficient < other.coefficient or
-                self.addend < other.addend
+                self.exponent < other.exponent
+                or self.coefficient < other.coefficient
+                or self.addend < other.addend
             )
         except AttributeError:
             raise NotImplemented
@@ -70,9 +71,9 @@ class Ordinal:
             return True
         try:
             return (
-                self.exponent > other.exponent or
-                self.coefficient > other.coefficient or
-                self.addend > other.addend
+                self.exponent > other.exponent
+                or self.coefficient > other.coefficient
+                or self.addend > other.addend
             )
         except AttributeError:
             raise NotImplemented
