@@ -1,4 +1,3 @@
-from copy import deepcopy
 from functools import total_ordering
 
 
@@ -25,24 +24,20 @@ class Ordinal:
 
         if self.exponent != 1:
             term += f"^({self.exponent})"
-
         if self.coefficient != 1:
             term += rf"*{self.coefficient}"
-
         if self.addend != 0:
             term += f" + {self.addend}"
 
-        return f"({term})"
+        return term
 
     def __str__(self):
         term = r"\omega"
 
         if self.exponent != 1:
             term += f"^{{{self.exponent}}}"
-
         if self.coefficient != 1:
             term += rf"\cdot{self.coefficient}"
-
         if self.addend != 0:
             term += f"+{self.addend}"
 
@@ -85,42 +80,38 @@ class Ordinal:
     def __add__(self, other):
         if is_non_negative_int(other) or self.exponent > other.exponent:
             return Ordinal(
-                deepcopy(self.exponent),
+                self.exponent,
                 self.coefficient,
                 self.addend + other,
             )
-
         elif self.exponent == other.exponent:
 
             if isinstance(self.addend, int):
-                new_addend = deepcopy(other.addend)
+                new_addend = other.addend
             else:
                 new_addend = self.addend + other.addend
 
             return Ordinal(
-                deepcopy(self.exponent),
+                self.exponent,
                 self.coefficient + other.coefficient,
                 new_addend,
             )
-
-        return deepcopy(other)
+        return other
 
     def __radd__(self, other):
         if is_non_negative_int(other):
-            return deepcopy(self)
+            return self
         raise NotImplemented
 
     def __mul__(self, other):
         if other == 0:
             return 0
-
         if is_non_negative_int(other):
             return Ordinal(
-                deepcopy(self.exponent),
+                self.exponent,
                 self.coefficient * other,
-                deepcopy(self.addend),
+                self.addend,
             )
-
         try:
             return Ordinal(
                 self.exponent + other.exponent,
@@ -144,14 +135,12 @@ class Ordinal:
     def __pow__(self, other):
         if other == 0:
             return 1
-
         if is_non_negative_int(other):
             return Ordinal(
                 self.exponent * other,
                 self.coefficient,
                 self.addend * self,
             )
-
         try:
             return Ordinal(
                 self.exponent * other,
