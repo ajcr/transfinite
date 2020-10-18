@@ -7,8 +7,18 @@ def is_non_negative_int(n):
 
 @total_ordering
 class Ordinal:
-    r"""
-    An infinite ordinal less than \epsilon_0.
+    """
+    An infinite ordinal less than epsilon_0.
+
+    This class describes an ordinal in Cantor Normal Form using
+    the following attributes:
+
+          (exponent)
+         ^
+        w . (coefficient) + (addend)
+
+    Here (coefficient) is an integer, while (exponent) and (addend)
+    can be either an integer or an instance of this Ordinal class.
 
     """
 
@@ -129,7 +139,7 @@ class Ordinal:
         if is_non_negative_int(other):
             return Ordinal(self.exponent * other, self.coefficient, self.addend * self)
         try:
-            return Ordinal(self.exponent * other, 1, 0)
+            return Ordinal(self.exponent * other)
         except AttributeError:
             raise NotImplemented
 
