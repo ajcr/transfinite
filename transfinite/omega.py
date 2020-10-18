@@ -85,9 +85,9 @@ class Ordinal:
     def __add__(self, other):
         if is_non_negative_int(other) or self.exponent > other.exponent:
             return Ordinal(
-                exponent=deepcopy(self.exponent),
-                coefficient=self.coefficient,
-                addend=self.addend + other,
+                deepcopy(self.exponent),
+                self.coefficient,
+                self.addend + other,
             )
 
         elif self.exponent == other.exponent:
@@ -98,9 +98,9 @@ class Ordinal:
                 new_addend = self.addend + other.addend
 
             return Ordinal(
-                exponent=deepcopy(self.exponent),
-                coefficient=self.coefficient + other.coefficient,
-                addend=new_addend,
+                deepcopy(self.exponent),
+                self.coefficient + other.coefficient,
+                new_addend,
             )
 
         return deepcopy(other)
@@ -116,22 +116,29 @@ class Ordinal:
 
         if is_non_negative_int(other):
             return Ordinal(
-                exponent=deepcopy(self.exponent),
-                coefficient=self.coefficient * other,
-                addend=deepcopy(self.addend),
+                deepcopy(self.exponent),
+                self.coefficient * other,
+                deepcopy(self.addend),
             )
 
-        return Ordinal(
-            exponent=self.exponent + other.exponent,
-            coefficient=other.coefficient,
-            addend=self.addend * other.addend + self * other.addend,
-        )
+        try:
+            return Ordinal(
+                self.exponent + other.exponent,
+                other.coefficient,
+                self.addend * other.addend + self * other.addend,
+            )
+        except AttributeError:
+            raise NotImplemented
 
     def __rmul__(self, other):
         if other == 0:
             return 0
-        elif is_non_negative_int(other):
-            return deepcopy(self)
+        if is_non_negative_int(other):
+            return Ordinal(
+                self.exponent,
+                self.coefficient,
+                other * self.addend,
+            )
         raise NotImplemented
 
     def __pow__(self, other):
@@ -140,12 +147,27 @@ class Ordinal:
 
         if is_non_negative_int(other):
             return Ordinal(
-                exponent=self.exponent * other,
-                coefficient=self.coefficient,
-                addend=self.addend * self,
+                self.exponent * other,
+                self.coefficient,
+                self.addend * self,
             )
 
-        return
+        try:
+            return Ordinal(
+                self.exponent * other,
+                1,
+                0,
+            )
+        except AttributeError:
+            raise NotImplemented
 
     def __rpow__(self, other):
-        return other ** self
+        if other == 0:
+            return 0
+        if is_non_negative_int(other):
+            return Ordinal(
+                self.exponent * self.coefficient,
+                other ** self.addend,
+                0,
+            )
+        raise NotImplemented
