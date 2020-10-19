@@ -164,6 +164,7 @@ class Ordinal:
                     other ** self.addend,
                 )
             )
-        return self.__class__(
-            self.__class__(self.exponent, self.coefficient)
-        ) * other ** self.addend
+        return (
+            self.__class__(self.__class__(self.exponent, self.coefficient))
+            * other ** self.addend
+        )
