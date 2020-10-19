@@ -299,12 +299,36 @@ def test_multiplication(a, b, expected):
         (Ordinal(addend=1), Ordinal(), Ordinal(exponent=Ordinal())),
         # 2 ** (w) == w
         (2, Ordinal(), Ordinal()),
+        # 7 ** (w) == w
+        (7, Ordinal(), Ordinal()),
         # 2 ** (w.6) == w^6
         (2, Ordinal(coefficient=6), Ordinal(exponent=6)),
         # 2 ** (w + 1) == w.2
         (2, Ordinal(addend=1), Ordinal(coefficient=2)),
+        # 5 ** (w + 2) == w.25
+        (5, Ordinal(addend=2), Ordinal(coefficient=25)),
         # 2 ** (w^w) == w^w^w
-        (2, Ordinal(exponent=Ordinal()), Ordinal(exponent=Ordinal())),
+        (2, Ordinal(exponent=Ordinal()), Ordinal(Ordinal(exponent=Ordinal()))),
+        # 2 ** (w^9) == w^w^8
+        (2, Ordinal(exponent=9), Ordinal(Ordinal(exponent=8))),
+        # 2 ** (w^w + w.3 + 9) == w^(w^w + 3).512
+        (
+            2,
+            Ordinal(exponent=Ordinal(), addend=Ordinal(coefficient=3, addend=9)),
+            Ordinal(exponent=Ordinal(exponent=Ordinal(), addend=3), coefficient=512),
+        ),
+        # 2 ** (w^w^w) == w^w^w^w
+        (
+            2,
+            Ordinal(exponent=Ordinal(exponent=Ordinal())),
+            Ordinal(exponent=Ordinal(exponent=Ordinal(exponent=Ordinal()))),
+        ),
+        # 3 ** (w^w + 1) == (w^w^w).3
+        (
+            3,
+            Ordinal(exponent=Ordinal(), addend=1),
+            Ordinal(exponent=Ordinal(exponent=Ordinal()), coefficient=3),
+        ),
     ],
 )
 def test_power(a, b, expected):

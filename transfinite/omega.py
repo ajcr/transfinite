@@ -148,10 +148,22 @@ class Ordinal:
             raise NotImplemented
 
     def __rpow__(self, other):
+        if not is_non_negative_int(other):
+            raise NotImplemented
         if other == 0:
             return 0
-        if is_non_negative_int(other):
+        if self.exponent == 1:
             return self.__class__(
-                self.exponent * self.coefficient, other ** self.addend
+                self.coefficient,
+                other ** self.addend,
             )
-        raise NotImplemented
+        if is_non_negative_int(self.exponent):
+            return self.__class__(
+                self.__class__(
+                    (self.exponent - 1) * self.coefficient,
+                    other ** self.addend,
+                )
+            )
+        return self.__class__(
+            self.__class__(self.exponent, self.coefficient)
+        ) * other ** self.addend
