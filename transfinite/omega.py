@@ -5,6 +5,13 @@ def is_non_negative_int(n):
     return n >= 0 and isinstance(n, int)
 
 
+def exp_by_squaring(x, n): 
+    if n == 0: return 1 
+    if n == 1: return x 
+    if n % 2 == 0: return exp_by_squaring(x * x, n // 2) 
+    return exp_by_squaring(x * x, (n - 1) // 2)  * x
+
+
 @total_ordering
 class Ordinal:
     """
@@ -34,11 +41,11 @@ class Ordinal:
         term = "w"
 
         if self.exponent != 1:
-            term += f"^({self.exponent})"
+            term += f"**({self.exponent!r})"
         if self.coefficient != 1:
-            term += rf"*{self.coefficient}"
+            term += rf"*{self.coefficient!r}"
         if self.addend != 0:
-            term += f" + {self.addend}"
+            term += f" + {self.addend!r}"
 
         return term
 
@@ -91,21 +98,16 @@ class Ordinal:
     def __add__(self, other):
         try:
             if is_non_negative_int(other) or self.exponent > other.exponent:
-                return self.__class__(
+                return Ordinal(
                     self.exponent, self.coefficient, self.addend + other
                 )
         except AttributeError:
             raise NotImplemented
         if self.exponent == other.exponent:
-            # if both addends are integers, new addend should not include self.addend
-            if isinstance(self.addend, int):
-                new_addend = other.addend
-            else:
-                new_addend = self.addend + other.addend
-            return self.__class__(
+            return Ordinal(
                 self.exponent,
                 self.coefficient + other.coefficient,
-                new_addend,
+                other.addend,
             )
         return other
 
@@ -115,12 +117,10 @@ class Ordinal:
         raise NotImplemented
 
     def __mul__(self, other):
-        if other == 0:
-            return 0
         if is_non_negative_int(other):
-            return self.__class__(self.exponent, self.coefficient * other, self.addend)
+            return other and Ordinal(self.exponent, self.coefficient * other, self.addend)
         try:
-            return self.__class__(
+            return Ordinal(
                 self.exponent + other.exponent,
                 other.coefficient,
                 self.addend * other.addend + self * other.addend,
@@ -129,21 +129,17 @@ class Ordinal:
             raise NotImplemented
 
     def __rmul__(self, other):
-        if other == 0:
-            return 0
         if is_non_negative_int(other):
-            return self.__class__(self.exponent, self.coefficient, other * self.addend)
+            return other and Ordinal(self.exponent, self.coefficient, other * self.addend)
         raise NotImplemented
 
     def __pow__(self, other):
-        if other == 0:
-            return 1
         if is_non_negative_int(other):
-            return self.__class__(
-                self.exponent * other, self.coefficient, self.addend * self
-            )
+            return exp_by_squaring(self, other)
         try:
-            return self.__class__(self.exponent * other)
+            return Ordinal(
+                self.exponent * Ordinal(other.exponent, other.coefficient)
+            ) * self ** other.addend
         except AttributeError:
             raise NotImplemented
 
@@ -153,18 +149,18 @@ class Ordinal:
         if other == 0:
             return 0
         if self.exponent == 1:
-            return self.__class__(
+            return Ordinal(
                 self.coefficient,
                 other ** self.addend,
             )
         if is_non_negative_int(self.exponent):
-            return self.__class__(
-                self.__class__(
+            return Ordinal(
+                Ordinal(
                     (self.exponent - 1) * self.coefficient,
                     other ** self.addend,
                 )
             )
         return (
-            self.__class__(self.__class__(self.exponent, self.coefficient))
+            Ordinal(Ordinal(self.exponent, self.coefficient))
             * other ** self.addend
         )
