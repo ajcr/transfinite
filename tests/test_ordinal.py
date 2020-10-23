@@ -1,6 +1,6 @@
 import pytest
 
-from .omega import Ordinal, as_latex
+from transfinite.ordinal import Ordinal, as_latex
 
 
 @pytest.mark.parametrize(
