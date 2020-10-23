@@ -1,6 +1,6 @@
 import pytest
 
-from .omega import Ordinal
+from .omega import Ordinal, as_latex
 
 
 @pytest.mark.parametrize(
@@ -107,28 +107,30 @@ def test_greater_than(a, b):
 
 
 @pytest.mark.parametrize(
-    "a,expected",
+    "a,expected_str,expected_latex",
     [
         # w
-        (Ordinal(), r"\omega"),
+        (Ordinal(), "w", r"\omega"),
         # w**5
-        (Ordinal(exponent=5), r"\omega^{5}"),
+        (Ordinal(exponent=5), "w**(5)", r"\omega^{5}"),
         # w**w > w
-        (Ordinal(exponent=Ordinal()), r"\omega^{\omega}"),
+        (Ordinal(exponent=Ordinal()), "w**(w)", r"\omega^{\omega}"),
         # w + 99
-        (Ordinal(addend=99), r"\omega+99"),
+        (Ordinal(addend=99), "w+99", r"\omega+99"),
         # w**(w**5 + w*3 + 66) * 5
         (
             Ordinal(
                 exponent=Ordinal(exponent=5, addend=Ordinal(coefficient=3, addend=66)),
                 coefficient=5,
             ),
+            "w**(w**(5)+w*3+66)*5",
             r"\omega^{\omega^{5}+\omega\cdot3+66}\cdot5",
         ),
     ],
 )
-def test_as_latex_string(a, expected):
-    assert str(a) == expected
+def test_as_string(a, expected_str, expected_latex):
+    assert str(a) == expected_str
+    assert as_latex(a) == expected_latex
 
 
 @pytest.mark.parametrize(
@@ -286,11 +288,19 @@ def test_addition(a, b, expected):
         (Ordinal(addend=1), Ordinal(exponent=2), Ordinal(exponent=3)),
         # w**(w**(w*5) + w) * w**(w**(w*5) + w) == w**(w**(w*5)*2+w)
         (
-            Ordinal(exponent=Ordinal(exponent=Ordinal(coefficient=5), addend=Ordinal())),
-            Ordinal(exponent=Ordinal(exponent=Ordinal(coefficient=5), addend=Ordinal())),
-            Ordinal(exponent=Ordinal(exponent=Ordinal(coefficient=5), coefficient=2, addend=Ordinal())),
-        )
-        ],
+            Ordinal(
+                exponent=Ordinal(exponent=Ordinal(coefficient=5), addend=Ordinal())
+            ),
+            Ordinal(
+                exponent=Ordinal(exponent=Ordinal(coefficient=5), addend=Ordinal())
+            ),
+            Ordinal(
+                exponent=Ordinal(
+                    exponent=Ordinal(coefficient=5), coefficient=2, addend=Ordinal()
+                )
+            ),
+        ),
+    ],
 )
 def test_multiplication(a, b, expected):
     assert a * b == expected
@@ -310,7 +320,11 @@ def test_multiplication(a, b, expected):
         # (w + 1) ** 2 == w**2 + w + 1
         (Ordinal(addend=1), 2, Ordinal(exponent=2, addend=Ordinal(addend=1))),
         # (w + 1) ** 3 == w**3 + w**2 + w + 1
-        (Ordinal(addend=1), 3, Ordinal(exponent=3, addend=Ordinal(exponent=2, addend=Ordinal(addend=1)))),
+        (
+            Ordinal(addend=1),
+            3,
+            Ordinal(exponent=3, addend=Ordinal(exponent=2, addend=Ordinal(addend=1))),
+        ),
         # (w + 1) ** w == w**w
         (Ordinal(addend=1), Ordinal(), Ordinal(exponent=Ordinal())),
         # 2 ** (w) == w
@@ -350,25 +364,24 @@ def test_multiplication(a, b, expected):
             Ordinal(
                 exponent=Ordinal(
                     exponent=Ordinal(coefficient=5),
-                    addend=Ordinal(
-                        exponent=Ordinal(), addend=2
-                    ))),
+                    addend=Ordinal(exponent=Ordinal(), addend=2),
+                )
+            ),
             2,
             Ordinal(
                 exponent=Ordinal(
                     exponent=Ordinal(coefficient=5),
                     coefficient=2,
-                    addend=Ordinal(
-                        exponent=Ordinal(), addend=2
-                    ))),
+                    addend=Ordinal(exponent=Ordinal(), addend=2),
+                )
+            ),
         ),
         # (w**(w**(w*5) + w**w + 2)) ** (w + 3) == w**(w**(w*5+1)+w**(w*5)*3+w**w+2)
         (
             Ordinal(
-                exponent=Ordinal(exponent=Ordinal(coefficient=5),
-                addend=Ordinal(
-                    exponent=Ordinal(),
-                    addend=2)
+                exponent=Ordinal(
+                    exponent=Ordinal(coefficient=5),
+                    addend=Ordinal(exponent=Ordinal(), addend=2),
                 )
             ),
             Ordinal(addend=3),
@@ -378,15 +391,15 @@ def test_multiplication(a, b, expected):
                         coefficient=5,
                         addend=1,
                     ),
-                addend=Ordinal(
-                    exponent=Ordinal(coefficient=5),
-                    coefficient=3,
                     addend=Ordinal(
-                        exponent=Ordinal(),
-                        addend=2,
-                    )
+                        exponent=Ordinal(coefficient=5),
+                        coefficient=3,
+                        addend=Ordinal(
+                            exponent=Ordinal(),
+                            addend=2,
+                        ),
+                    ),
                 )
-            )
             ),
         ),
     ],

@@ -5,11 +5,27 @@ def is_non_negative_int(n):
     return n >= 0 and isinstance(n, int)
 
 
-def exp_by_squaring(x, n): 
-    if n == 0: return 1 
-    if n == 1: return x 
-    if n % 2 == 0: return exp_by_squaring(x * x, n // 2) 
-    return exp_by_squaring(x * x, (n - 1) // 2)  * x
+def exp_by_squaring(x, n):
+    if n == 0:
+        return 1
+    if n == 1:
+        return x
+    if n % 2 == 0:
+        return exp_by_squaring(x * x, n // 2)
+    return exp_by_squaring(x * x, (n - 1) // 2) * x
+
+
+def as_latex(ordinal):
+    if isinstance(ordinal, int):
+        return str(ordinal)
+    term = r"\omega"
+    if ordinal.exponent != 1:
+        term += f"^{{{as_latex(ordinal.exponent)}}}"
+    if ordinal.coefficient != 1:
+        term += rf"\cdot{as_latex(ordinal.coefficient)}"
+    if ordinal.addend != 0:
+        term += f"+{as_latex(ordinal.addend)}"
+    return term
 
 
 @total_ordering
@@ -24,8 +40,9 @@ class Ordinal:
          ^
         w . (coefficient) + (addend)
 
-    Here (coefficient) is an integer, while (exponent) and (addend)
-    can be either an integer or an instance of this Ordinal class.
+    w denotes the first infinite ordinal, (coefficient) is an integer,
+    (exponent) and (addend) can be either an integer or an instance of
+    this Ordinal class.
 
     """
 
@@ -35,30 +52,19 @@ class Ordinal:
         self.addend = addend
 
     def _repr_latex_(self):
-        return rf"${self}$"
+        return f"${as_latex(self)}$"
 
     def __repr__(self):
-        term = "w"
-
-        if self.exponent != 1:
-            term += f"**({self.exponent!r})"
-        if self.coefficient != 1:
-            term += rf"*{self.coefficient!r}"
-        if self.addend != 0:
-            term += f" + {self.addend!r}"
-
-        return term
+        return str(self)
 
     def __str__(self):
-        term = r"\omega"
-
+        term = "w"
         if self.exponent != 1:
-            term += f"^{{{self.exponent}}}"
+            term += f"**({self.exponent})"
         if self.coefficient != 1:
-            term += rf"\cdot{self.coefficient}"
+            term += f"*{self.coefficient}"
         if self.addend != 0:
             term += f"+{self.addend}"
-
         return term
 
     def __eq__(self, other):
@@ -98,9 +104,7 @@ class Ordinal:
     def __add__(self, other):
         try:
             if is_non_negative_int(other) or self.exponent > other.exponent:
-                return Ordinal(
-                    self.exponent, self.coefficient, self.addend + other
-                )
+                return Ordinal(self.exponent, self.coefficient, self.addend + other)
         except AttributeError:
             raise NotImplemented
         if self.exponent == other.exponent:
@@ -118,7 +122,9 @@ class Ordinal:
 
     def __mul__(self, other):
         if is_non_negative_int(other):
-            return other and Ordinal(self.exponent, self.coefficient * other, self.addend)
+            return other and Ordinal(
+                self.exponent, self.coefficient * other, self.addend
+            )
         try:
             return Ordinal(
                 self.exponent + other.exponent,
@@ -130,16 +136,19 @@ class Ordinal:
 
     def __rmul__(self, other):
         if is_non_negative_int(other):
-            return other and Ordinal(self.exponent, self.coefficient, other * self.addend)
+            return other and Ordinal(
+                self.exponent, self.coefficient, other * self.addend
+            )
         raise NotImplemented
 
     def __pow__(self, other):
         if is_non_negative_int(other):
             return exp_by_squaring(self, other)
         try:
-            return Ordinal(
-                self.exponent * Ordinal(other.exponent, other.coefficient)
-            ) * self ** other.addend
+            return (
+                Ordinal(self.exponent * Ordinal(other.exponent, other.coefficient))
+                * self ** other.addend
+            )
         except AttributeError:
             raise NotImplemented
 
@@ -160,7 +169,4 @@ class Ordinal:
                     other ** self.addend,
                 )
             )
-        return (
-            Ordinal(Ordinal(self.exponent, self.coefficient))
-            * other ** self.addend
-        )
+        return Ordinal(Ordinal(self.exponent, self.coefficient)) * other ** self.addend
