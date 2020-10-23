@@ -2,15 +2,19 @@
 
 `transfinite` introduces transfinite ordinals below epsilon_0 to Python.
 
-These ordinal objects interact naturally with Python's positive integers (finite ordinals) and support fundamental arithmetic operations (addition, multiplication and exponentiation).
+These ordinal objects interact naturally with Python's integers (finite ordinals) and support ordinal arithmetic operations (addition, multiplication and exponentiation).
 
-In Jupyter notebooks, ordinals are printed in LaTeX for easy reading.
+In Jupyter notebooks, ordinals are printed in LaTeX for easy interpretation.
 
 ## Installation
 
-Works with Python 3. Use of the Jupyter/IPython notebook/qtconsole is highly recommended, but not mandatory.
+Works with Python 3. Use of the Jupyter/IPython notebook/qtconsole is highly recommended, but not mandatory:
 
-To install, clone the repository (e.g. `git clone https://github.com/ajcr/transfinite.git`), navigate to the new directory and run `python setup.py install`.
+```
+pip install transfinite
+```
+
+To install from git, set up a virtualenv (optional), clone the repository (e.g. `git clone https://github.com/ajcr/transfinite.git`), navigate to the new directory and run `python -m pip install -e .`.
 
 Tests can be run by invoking `pytest`.
 
