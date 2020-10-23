@@ -87,7 +87,7 @@ class Ordinal:
                 or self.addend < other.addend
             )
         except AttributeError:
-            raise NotImplemented
+            return NotImplemented
 
     def __gt__(self, other):
         if is_non_negative_int(other):
@@ -99,26 +99,24 @@ class Ordinal:
                 or self.addend > other.addend
             )
         except AttributeError:
-            raise NotImplemented
+            return NotImplemented
 
     def __add__(self, other):
         try:
             if is_non_negative_int(other) or self.exponent > other.exponent:
                 return Ordinal(self.exponent, self.coefficient, self.addend + other)
         except AttributeError:
-            raise NotImplemented
+            return NotImplemented
         if self.exponent == other.exponent:
             return Ordinal(
-                self.exponent,
-                self.coefficient + other.coefficient,
-                other.addend,
+                self.exponent, self.coefficient + other.coefficient, other.addend
             )
         return other
 
     def __radd__(self, other):
         if is_non_negative_int(other):
             return self
-        raise NotImplemented
+        return NotImplemented
 
     def __mul__(self, other):
         if is_non_negative_int(other):
@@ -132,14 +130,14 @@ class Ordinal:
                 self.addend * other.addend + self * other.addend,
             )
         except AttributeError:
-            raise NotImplemented
+            return NotImplemented
 
     def __rmul__(self, other):
         if is_non_negative_int(other):
             return other and Ordinal(
                 self.exponent, self.coefficient, other * self.addend
             )
-        raise NotImplemented
+        return NotImplemented
 
     def __pow__(self, other):
         if is_non_negative_int(other):
@@ -150,23 +148,17 @@ class Ordinal:
                 * self ** other.addend
             )
         except AttributeError:
-            raise NotImplemented
+            return NotImplemented
 
     def __rpow__(self, other):
         if not is_non_negative_int(other):
-            raise NotImplemented
+            return NotImplemented
         if other == 0:
             return 0
         if self.exponent == 1:
-            return Ordinal(
-                self.coefficient,
-                other ** self.addend,
-            )
+            return Ordinal(self.coefficient, other ** self.addend)
         if is_non_negative_int(self.exponent):
             return Ordinal(
-                Ordinal(
-                    (self.exponent - 1) * self.coefficient,
-                    other ** self.addend,
-                )
+                Ordinal((self.exponent - 1) * self.coefficient, other ** self.addend)
             )
         return Ordinal(Ordinal(self.exponent, self.coefficient)) * other ** self.addend

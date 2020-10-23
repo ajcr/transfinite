@@ -1,3 +1,5 @@
+import copy
+
 import pytest
 
 from transfinite.ordinal import Ordinal, as_latex
@@ -19,7 +21,7 @@ from transfinite.ordinal import Ordinal, as_latex
     ],
 )
 def test_equals(a):
-    assert a == a
+    assert a == copy.deepcopy(a)
 
 
 @pytest.mark.parametrize(
@@ -387,17 +389,11 @@ def test_multiplication(a, b, expected):
             Ordinal(addend=3),
             Ordinal(
                 exponent=Ordinal(
-                    exponent=Ordinal(
-                        coefficient=5,
-                        addend=1,
-                    ),
+                    exponent=Ordinal(coefficient=5, addend=1),
                     addend=Ordinal(
                         exponent=Ordinal(coefficient=5),
                         coefficient=3,
-                        addend=Ordinal(
-                            exponent=Ordinal(),
-                            addend=2,
-                        ),
+                        addend=Ordinal(exponent=Ordinal(), addend=2),
                     ),
                 )
             ),
