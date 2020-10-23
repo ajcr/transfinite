@@ -114,9 +114,9 @@ class Ordinal:
         return other
 
     def __radd__(self, other):
-        if is_non_negative_int(other):
-            return self
-        return NotImplemented
+        if not is_non_negative_int(other):
+            return NotImplemented
+        return self
 
     def __mul__(self, other):
         if is_non_negative_int(other):
@@ -133,11 +133,9 @@ class Ordinal:
             return NotImplemented
 
     def __rmul__(self, other):
-        if is_non_negative_int(other):
-            return other and Ordinal(
-                self.exponent, self.coefficient, other * self.addend
-            )
-        return NotImplemented
+        if not is_non_negative_int(other):
+            return NotImplemented
+        return other and Ordinal(self.exponent, self.coefficient, other * self.addend)
 
     def __pow__(self, other):
         if is_non_negative_int(other):
