@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/transfinite.svg)](https://badge.fury.io/py/transfinite)
 
-Transfinite [ordinal arithmetic](https://en.wikipedia.org/wiki/Ordinal_arithmetic) up to the first [epsilon number](https://en.wikipedia.org/wiki/Epsilon_numbers_(mathematics).
+Transfinite [ordinal arithmetic](https://en.wikipedia.org/wiki/Ordinal_arithmetic) up to the first [epsilon number](https://en.wikipedia.org/wiki/Epsilon_numbers_(mathematics)).
 
 In Jupyter notebooks, ordinals are printed in LaTeX for easy interpretation.
 
