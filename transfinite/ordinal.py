@@ -82,21 +82,15 @@ class Ordinal:
             return False
         try:
             return (
+                # smaller exponent on leading term
                 self.exponent < other.exponent
-                or self.coefficient < other.coefficient
-                or self.addend < other.addend
-            )
-        except AttributeError:
-            return NotImplemented
-
-    def __gt__(self, other):
-        if is_non_negative_int(other):
-            return True
-        try:
-            return (
-                self.exponent > other.exponent
-                or self.coefficient > other.coefficient
-                or self.addend > other.addend
+                # or equal exponent on leading term and smaller coefficient
+                or self.exponent == other.exponent
+                and self.coefficient < other.coefficient
+                # or equal leading term and smaller addend
+                or self.exponent == other.exponent
+                and self.coefficient == other.coefficient
+                and self.addend < other.addend
             )
         except AttributeError:
             return NotImplemented
