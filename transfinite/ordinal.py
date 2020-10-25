@@ -47,6 +47,28 @@ class Ordinal:
     """
 
     def __init__(self, exponent=1, coefficient=1, addend=0):
+
+        if not isinstance(exponent, (int, Ordinal)):
+            raise TypeError("exponent must be an Ordinal or an integer greater than 0")
+
+        if exponent < 1:
+            raise ValueError("exponent must be an Ordinal or an integer greater than 0")
+
+        if not isinstance(coefficient, int):
+            raise TypeError("coefficient must be an integer greater than 0")
+
+        if coefficient < 1:
+            raise ValueError("coefficient must be an integer greater than 0")
+
+        if not isinstance(addend, (int, Ordinal)):
+            raise TypeError("addend must be an Ordinal or a non-negative integer")
+
+        if isinstance(addend, int) and addend < 0:
+            raise ValueError("addend must be an Ordinal or a non-negative integer")
+
+        if isinstance(addend, Ordinal) and addend.exponent >= exponent:
+            raise ValueError(f"addend.exponent must be less than exponent {exponent}")
+
         self.exponent = exponent
         self.coefficient = coefficient
         self.addend = addend
