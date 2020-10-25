@@ -438,3 +438,18 @@ def test_multiplication(a, b, expected):
 )
 def test_power(a, b, expected):
     assert a ** b == expected
+
+
+@pytest.mark.parametrize(
+    "a,expected",
+    [
+        (Ordinal(), True),
+        (Ordinal(addend=1), False),
+        (Ordinal(exponent=Ordinal(), addend=1), False),
+        (Ordinal(exponent=Ordinal()), True),
+        (Ordinal(exponent=Ordinal(), addend=Ordinal(addend=3)), False),
+        (Ordinal(exponent=Ordinal(), addend=Ordinal(coefficient=3)), True),
+    ],
+)
+def test_is_limit(a, expected):
+    assert a.is_limit() is expected

@@ -73,6 +73,14 @@ class Ordinal:
         self.coefficient = coefficient
         self.addend = addend
 
+    def is_limit(self):
+        if is_non_negative_int(self.addend):
+            return self.addend == 0
+        return self.addend.is_limit()
+
+    def is_successor(self):
+        return not self.is_limit()
+
     def _repr_latex_(self):
         return f"${as_latex(self)}$"
 
