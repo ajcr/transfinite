@@ -106,6 +106,9 @@ class Ordinal:
 
         return term
 
+    def __hash__(self):
+        return hash((hash(self.exponent), hash(self.coefficient), hash(self.addend)))
+
     def __eq__(self, other):
         try:
             return (
