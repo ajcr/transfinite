@@ -59,12 +59,29 @@ class Ordinal:
 
     def __str__(self):
         term = "w"
-        if self.exponent != 1:
+
+        # Only use parentheses for exponent if finite and greater than 1,
+        # or its addend is nonzero or its coefficient is greater than 1.
+
+        if self.exponent == 1:
+            pass
+
+        elif (
+            is_non_negative_int(self.exponent)
+            or self.exponent.coefficient == 1
+            and self.exponent.addend == 0
+        ):
+            term += f"**{self.exponent}"
+
+        else:
             term += f"**({self.exponent})"
+
         if self.coefficient != 1:
             term += f"*{self.coefficient}"
+
         if self.addend != 0:
-            term += f"+{self.addend}"
+            term += f" + {self.addend}"
+
         return term
 
     def __eq__(self, other):

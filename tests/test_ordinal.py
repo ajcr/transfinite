@@ -114,18 +114,26 @@ def test_greater_than(a, b):
         # w
         (Ordinal(), "w", r"\omega"),
         # w**5
-        (Ordinal(exponent=5), "w**(5)", r"\omega^{5}"),
-        # w**w > w
-        (Ordinal(exponent=Ordinal()), "w**(w)", r"\omega^{\omega}"),
+        (Ordinal(exponent=5), "w**5", r"\omega^{5}"),
+        # w**w
+        (Ordinal(exponent=Ordinal()), "w**w", r"\omega^{\omega}"),
+        # w**(w + 1)
+        (Ordinal(exponent=Ordinal(addend=1)), "w**(w + 1)", r"\omega^{\omega+1}"),
+        # w**(w*3)
+        (
+            Ordinal(exponent=Ordinal(coefficient=3)),
+            "w**(w*3)",
+            r"\omega^{\omega\cdot3}",
+        ),
         # w + 99
-        (Ordinal(addend=99), "w+99", r"\omega+99"),
+        (Ordinal(addend=99), "w + 99", r"\omega+99"),
         # w**(w**5 + w*3 + 66) * 5
         (
             Ordinal(
                 exponent=Ordinal(exponent=5, addend=Ordinal(coefficient=3, addend=66)),
                 coefficient=5,
             ),
-            "w**(w**(5)+w*3+66)*5",
+            "w**(w**5 + w*3 + 66)*5",
             r"\omega^{\omega^{5}+\omega\cdot3+66}\cdot5",
         ),
     ],
