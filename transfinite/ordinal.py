@@ -162,12 +162,14 @@ class Ordinal:
     def __rpow__(self, other):
         if not is_non_negative_int(other):
             return NotImplemented
-        if other == 0:
-            return 0
+        if other in (0, 1):
+            return other
         if self.exponent == 1:
             return Ordinal(self.coefficient, other ** self.addend)
+        # n**w**k == n**w**(k - 1) for all 1 < n,k < w
         if is_non_negative_int(self.exponent):
             return Ordinal(
                 Ordinal((self.exponent - 1) * self.coefficient, other ** self.addend)
             )
+        # n**w**a == w**w**a for all 1 < n < w and a >= w
         return Ordinal(Ordinal(self.exponent, self.coefficient)) * other ** self.addend

@@ -337,6 +337,10 @@ def test_multiplication(a, b, expected):
         ),
         # (w + 1) ** w == w**w
         (Ordinal(addend=1), Ordinal(), Ordinal(exponent=Ordinal())),
+        # 0 ** (w) == 0
+        (0, Ordinal(), 0),
+        # 1 ** (w) == 1
+        (1, Ordinal(), 1),
         # 2 ** (w) == w
         (2, Ordinal(), Ordinal()),
         # 7 ** (w) == w
