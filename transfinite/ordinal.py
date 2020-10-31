@@ -5,7 +5,7 @@ def is_non_negative_int(n):
     """
     Return True if n is a non-negative integer.
 
-    If n is a negative integer, raise a ValueError.
+    If n is a negative integer raise a ValueError, else return False.
     """
     if isinstance(n, int) and n >= 0:
         return True
@@ -15,6 +15,10 @@ def is_non_negative_int(n):
 
 
 def exp_by_squaring(x, n):
+    """
+    Compute x**n using exponentiation by squaring.
+
+    """
     if n == 0:
         return 1
     if n == 1:
@@ -25,6 +29,10 @@ def exp_by_squaring(x, n):
 
 
 def as_latex(ordinal):
+    """
+    Convert the Ordinal object to a LaTeX string.
+
+    """
     if isinstance(ordinal, int):
         return str(ordinal)
     term = r"\omega"
