@@ -1,4 +1,5 @@
 import copy
+import operator
 
 import pytest
 
@@ -453,3 +454,25 @@ def test_power(a, b, expected):
 )
 def test_is_limit(a, expected):
     assert a.is_limit() is expected
+
+
+@pytest.mark.parametrize(
+    "op",
+    [
+        operator.add,
+        operator.mul,
+        operator.pow,
+        operator.lt,
+        operator.gt,
+        operator.ge,
+        operator.le,
+    ],
+)
+@pytest.mark.parametrize(
+    "a,expected_error",
+    [(-2, ValueError), (2.1, TypeError), ("2", TypeError), (7j, TypeError)],
+)
+def test_invalid_types_operation(op, a, expected_error):
+    with pytest.raises(expected_error):
+        op(Ordinal(), a)
+        op(a, Ordinal())
