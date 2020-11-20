@@ -216,7 +216,7 @@ class Ordinal:
             return other
         if self.exponent == 1:
             return Ordinal(self.coefficient, other ** self.addend)
-        # n**w**k == n**w**(k - 1) for all 1 < n,k < w
+        # n**w**k == w**w**(k - 1) for all 1 < n,k < w
         if is_non_negative_int(self.exponent):
             return Ordinal(
                 Ordinal((self.exponent - 1) * self.coefficient, other ** self.addend)
