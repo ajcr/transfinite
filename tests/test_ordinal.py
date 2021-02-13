@@ -3,7 +3,8 @@ import operator
 
 import pytest
 
-from transfinite.ordinal import Ordinal, as_latex
+from transfinite.ordinal import Ordinal
+from transfinite.util import as_latex
 
 
 @pytest.mark.parametrize(
