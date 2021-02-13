@@ -476,3 +476,73 @@ def test_invalid_types_operation(op, a, expected_error):
     with pytest.raises(expected_error):
         op(Ordinal(), a)
         op(a, Ordinal())
+
+
+@pytest.mark.parametrize(
+    "a,expected",
+    [
+        ## Primes
+        # w
+        (Ordinal(), True),
+        # w + 1
+        (Ordinal(addend=1), True),
+        # w**2 + 1
+        (Ordinal(exponent=2, addend=1), True),
+        # w**3 + 1
+        (Ordinal(exponent=3, addend=1), True),
+        # w**w
+        (Ordinal(exponent=Ordinal()), True),
+        # w**w + 1
+        (Ordinal(exponent=Ordinal(), addend=1), True),
+        # w**(w + 1) + 1
+        (Ordinal(exponent=Ordinal(addend=1), addend=1), True),
+        # w**w**w + 1
+        (Ordinal(exponent=Ordinal(exponent=Ordinal())), True),
+        ## Composites
+        # w + 2
+        (Ordinal(addend=2), False),
+        # w*2
+        (Ordinal(coefficient=2), False),
+        # w*2 + 1
+        (Ordinal(coefficient=2, addend=1), False),
+        # w*2 + 3
+        (Ordinal(coefficient=2, addend=3), False),
+        # w**2
+        (Ordinal(exponent=2), False),
+        # w**2 + w
+        (Ordinal(exponent=2, addend=Ordinal()), False),
+    ],
+)
+def test_is_prime(a, expected):
+    assert a.is_prime() is expected
+
+
+@pytest.mark.parametrize(
+    "a,expected",
+    [
+        # w
+        (Ordinal(), True),
+        # w + 1
+        (Ordinal(addend=1), False),
+        # w**2 + 1
+        (Ordinal(exponent=2, addend=1), False),
+        # w**w
+        (Ordinal(exponent=Ordinal()), True),
+        # w**w + 1
+        (Ordinal(exponent=Ordinal(), addend=1), False),
+        # w**(w + 1)
+        (Ordinal(exponent=Ordinal(addend=1), addend=1), False),
+        # w**w**w
+        (Ordinal(exponent=Ordinal(exponent=Ordinal())), True),
+        # w**w**w + 1
+        (Ordinal(exponent=Ordinal(exponent=Ordinal()), addend=1), False),
+        # w + 2
+        (Ordinal(addend=2), False),
+        # w*2
+        (Ordinal(coefficient=2), False),
+        # w*2 + 3
+        (Ordinal(coefficient=2, addend=3), False),
+    ],
+)
+def test_is_gamma(a, expected):
+    assert a.is_gamma() is expected

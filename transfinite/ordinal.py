@@ -1,17 +1,6 @@
 from functools import total_ordering
 
-
-def is_non_negative_int(n):
-    """
-    Return True if n is a non-negative integer.
-
-    If n is a negative integer raise a ValueError, else return False.
-    """
-    if isinstance(n, int) and n >= 0:
-        return True
-    if isinstance(n, int):
-        raise ValueError(f"int value must be non-negative (got {n})")
-    return False
+from transfinite.util import is_non_negative_int
 
 
 def exp_by_squaring(x, n):
@@ -97,6 +86,37 @@ class Ordinal:
 
     def is_successor(self):
         return not self.is_limit()
+
+    def is_gamma(self):
+        """
+        Return true if ordinal is addititively indecomposable.
+
+        These are ordinals of the form  w**a  for a > 0.
+        """
+        return self.coefficient == 1 and self.addend == 0
+
+    def is_delta(self):
+        """
+        Return true if ordinal is multiplicatively indecomposable.
+
+        These are ordinals of the form  w**w**a  for any ordinal a.
+        """
+        return (
+            self.coefficient == 1
+            and self.addend == 0
+            and (self.exponent == 1 or not isinstance(self.exponent, int))
+        )
+
+    def is_prime(self):
+        """
+        Return true if ordinal cannot be factored into smaller ordinals,
+        both greater than 1:
+
+         * ordinal is the successor of a gamma ordinal, or
+         * ordinal is a delta ordinal
+
+        """
+        return self.coefficient == 1 and self.addend == 1 or self.is_delta()
 
     def _repr_latex_(self):
         return f"${as_latex(self)}$"

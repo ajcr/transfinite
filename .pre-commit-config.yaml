@@ -20,4 +20,5 @@ repos:
           --disable, missing-docstring,
           --disable, import-error,
           --disable, duplicate-code,
+          --disable, consider-using-ternary,
       ]
