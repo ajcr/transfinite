@@ -499,19 +499,27 @@ def test_invalid_types_operation(op, a, expected_error):
         (Ordinal(exponent=Ordinal(addend=1), addend=1), True),
         # w**w**w + 1
         (Ordinal(exponent=Ordinal(exponent=Ordinal())), True),
+        # w**w**(w+1)
+        (Ordinal(exponent=Ordinal(exponent=Ordinal(addend=1))), True),
+        # w**w**(w*2)
+        (Ordinal(exponent=Ordinal(exponent=Ordinal(coefficient=2))), True),
         ## Composites
-        # w + 2
+        # w + 2  [2 * (w+1)]
         (Ordinal(addend=2), False),
-        # w*2
+        # w*2  [w * 2]
         (Ordinal(coefficient=2), False),
-        # w*2 + 1
+        # w*2 + 1  [(w+1) * 2]
         (Ordinal(coefficient=2, addend=1), False),
-        # w*2 + 3
+        # w*2 + 3  [3 * (w+1) * 2]
         (Ordinal(coefficient=2, addend=3), False),
-        # w**2
+        # w**2  [w * w]
         (Ordinal(exponent=2), False),
-        # w**2 + w
+        # w**2 + w   [w * (w**2 + 1)]
         (Ordinal(exponent=2, addend=Ordinal()), False),
+        # w**(w*2)  [w**w * w**w]
+        (Ordinal(exponent=Ordinal(coefficient=2)), False),
+        # w**(w+1)  [w**w * w]
+        (Ordinal(exponent=Ordinal(addend=1)), False),
     ],
 )
 def test_is_prime(a, expected):

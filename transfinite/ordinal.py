@@ -73,7 +73,12 @@ class Ordinal:
         return (
             self.coefficient == 1
             and self.addend == 0
-            and (self.exponent == 1 or not isinstance(self.exponent, int))
+            and (
+                self.exponent == 1
+                or not isinstance(self.exponent, int)
+                and self.exponent.coefficient == 1
+                and self.exponent.addend == 0
+            )
         )
 
     def is_prime(self):
