@@ -10,29 +10,19 @@ def subtract(a, b):
     if a <= b:
         raise ValueError("First argument must be greater than second argument")
 
-    # a and b are finite
     if is_non_negative_int(a):
         return a - b
 
-    # a is transfinite, b is finite
-    if is_non_negative_int(b):
-        return a
-
-    # a and b are transfinite
-    if a.exponent > b.exponent:
+    if is_non_negative_int(b) or a.exponent > b.exponent:
         return a
 
     if a.exponent == b.exponent and a.coefficient == b.coefficient:
         return subtract(a.addend, b.addend)
 
-    if a.exponent == b.exponent and a.coefficient > b.coefficient:
-        return Ordinal(
-            exponent=a.exponent,
-            coefficient=subtract(a.coefficient, b.coefficient),
-            addend=a.addend,
-        )
-
-    raise NotImplementedError
+    # Here we know that a.coefficient > b.coefficient
+    return Ordinal(
+        exponent=a.exponent, coefficient=a.coefficient - b.coefficient, addend=a.addend
+    )
 
 
 def ordinal_terms(a):
@@ -103,7 +93,7 @@ def factorise_term_successor(ordinal_term):
     return fs
 
 
-def factors(a):
+def factors(ordinal):
     """
     Return the prime factors of the ordinal.
 
@@ -113,18 +103,18 @@ def factors(a):
 
     Note: finite integers are not broken into prime factors.
     """
-    if is_non_negative_int(a) or a.is_prime():
-        return [(a, 1)]
+    if is_non_negative_int(ordinal) or ordinal.is_prime():
+        return [(ordinal, 1)]
 
-    terms = ordinal_terms(a)
+    terms = ordinal_terms(ordinal)
 
     if len(terms) == 1:
         return factorise_term(terms[0])
 
-    fs = factorise_term(terms.pop()) if a.is_limit() else [(terms.pop(), 1)]
+    fs = factorise_term(terms.pop()) if ordinal.is_limit() else [(terms.pop(), 1)]
 
     # At this stage, terms is a list of infinite ordinals ordered from largest
-    # to smallest. The loop below removes least term and add the factors of its
+    # to smallest. The loop below removes least term and adds the factors of its
     # successor to the list of factors, then divides it into the remaining terms.
 
     while terms:
