@@ -101,6 +101,8 @@ def test_factorise_term_successor(a):
         w ** (w + 1) + 1,
         w ** (w + 1) * 8 + 1,
         w ** w ** 2 + w ** w,
+        w ** w ** 2 + w ** w + w ** 3,
+        w ** w ** 2 + w ** w + w ** 3 * 7,
         w ** w ** 2 + w ** w + 1,
         w ** w ** 2 + w ** w + 21,
         w ** w ** 2 + w ** w * 7 + 21,
@@ -110,6 +112,8 @@ def test_factorise_term_successor(a):
         w ** w ** (w * 4) + w ** (w + 1) + w ** w + 13,
         w ** w ** (w * 4) + w ** (w ** 2 + 1) * 7 + w ** w + 13,
         w ** w ** (w * 4 + 2) * 11 + w ** (w ** 2 + w + 1) * 7 + w ** w + 13,
+        (w + 1) ** 3,
+        (w ** 2 + 1) ** 5,
     ],
 )
 def test_factors(a):
@@ -130,6 +134,9 @@ def test_factors(a):
 
     # If there are only successor ordinals as factors there is no need to check further
     if len(groups) == 1 and groups[0][0]:
+        assert all(
+            first != second for first, second in zip(groups[0][1], groups[0][1][1:])
+        ), "List of successor factors contains consecutive ordinals that are equal"
         return
 
     # Otherwise, there are both limit/successor factors: limit must come first and be sorted
@@ -139,3 +146,6 @@ def test_factors(a):
     assert groups[0][1] == sorted(
         groups[0][1], reverse=True
     ), "Successor ordinals not sorted in descending order"
+    assert all(
+        first != second for first, second in zip(groups[0][1], groups[0][1][1:])
+    ), "List of limit factors contains consecutive ordinals that are equal"

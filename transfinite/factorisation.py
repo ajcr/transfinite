@@ -105,10 +105,12 @@ def factors(ordinal, return_latex=False):
     """
     terms = ordinal_terms(ordinal)
 
-    if len(terms) == 1:
+    if len(terms) == 1 or not is_finite_ordinal(terms[-1]):
         fs = factorise_term(terms.pop())
+
     elif terms[-1] > 1:
         fs = [(terms.pop(), 1)]
+
     else:
         terms.pop()
         fs = []
@@ -121,7 +123,15 @@ def factors(ordinal, return_latex=False):
 
         *terms, least_term = terms
 
-        fs += factorise_term_successor(least_term)
+        (ordinal_factor, exp), *coeff_factor = factorise_term_successor(least_term)
+
+        if fs and fs[-1][0] == ordinal_factor:
+            fs[-1] = (ordinal_factor, fs[-1][1] + exp)
+
+        else:
+            fs += [(ordinal_factor, exp)]
+
+        fs += coeff_factor
 
         terms = [
             Ordinal(
