@@ -23,6 +23,14 @@ def multiply_factors(fs):
     return a
 
 
+def is_not_equal_consecutive(fs):
+    """
+    Return True if the sequence has no consecutive equal elements.
+
+    """
+    return all(first != second for first, second in zip(fs, fs[1:]))
+
+
 @pytest.mark.parametrize(
     "a,b",
     [
@@ -134,8 +142,8 @@ def test_factors(a):
 
     # If there are only successor ordinals as factors there is no need to check further
     if len(groups) == 1 and groups[0][0]:
-        assert all(
-            first != second for first, second in zip(groups[0][1], groups[0][1][1:])
+        assert is_not_equal_consecutive(
+            groups[0][1]
         ), "List of successor factors contains consecutive ordinals that are equal"
         return
 
@@ -146,6 +154,6 @@ def test_factors(a):
     assert groups[0][1] == sorted(
         groups[0][1], reverse=True
     ), "Successor ordinals not sorted in descending order"
-    assert all(
-        first != second for first, second in zip(groups[0][1], groups[0][1][1:])
+    assert is_not_equal_consecutive(
+        groups[0][1]
     ), "List of limit factors contains consecutive ordinals that are equal"
