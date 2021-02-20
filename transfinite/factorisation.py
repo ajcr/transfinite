@@ -1,5 +1,5 @@
 from transfinite.ordinal import Ordinal
-from transfinite.util import is_finite_ordinal
+from transfinite.util import is_finite_ordinal, LatexRepr
 
 
 def subtract(a, b):
@@ -93,7 +93,7 @@ def factorise_term_successor(ordinal_term):
     return fs
 
 
-def factors(ordinal):
+def factors(ordinal, return_latex=False):
     """
     Return the prime factors of the ordinal.
 
@@ -103,15 +103,15 @@ def factors(ordinal):
 
     Note: finite integers are not broken into prime factors.
     """
-    if is_finite_ordinal(ordinal) or ordinal.is_prime():
-        return [(ordinal, 1)]
-
     terms = ordinal_terms(ordinal)
 
     if len(terms) == 1:
-        return factorise_term(terms[0])
-
-    fs = factorise_term(terms.pop()) if ordinal.is_limit() else [(terms.pop(), 1)]
+        fs = factorise_term(terms.pop())
+    elif terms[-1] > 1:
+        fs = [(terms.pop(), 1)]
+    else:
+        terms.pop()
+        fs = []
 
     # At this stage, terms is a list of infinite ordinals ordered from largest
     # to smallest. The loop below removes least term and adds the factors of its
@@ -130,5 +130,8 @@ def factors(ordinal):
             )
             for t in terms
         ]
+
+    if return_latex:
+        return LatexRepr.from_factors(fs)
 
     return fs
