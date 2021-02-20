@@ -25,6 +25,19 @@ def subtract(a, b):
     )
 
 
+def divide_terms_by_ordinal(terms, ordinal):
+    """
+    Divide each term in the list by the specified ordinal.
+
+    """
+    return [
+        Ordinal(
+            exponent=subtract(t.exponent, ordinal.exponent), coefficient=t.coefficient
+        )
+        for t in terms
+    ]
+
+
 def ordinal_terms(a):
     """
     Return a list containing all terms of the ordinal.
@@ -110,7 +123,9 @@ def factors(ordinal, return_latex=False):
     terms = ordinal_terms(ordinal)
 
     if len(terms) == 1 or not is_finite_ordinal(terms[-1]):
-        fs = factorise_term(terms.pop())
+        least_term = terms.pop()
+        fs = factorise_term(least_term)
+        terms = divide_terms_by_ordinal(terms, least_term)
 
     elif terms[-1] > 1:
         fs = [(terms.pop(), 1)]
@@ -137,13 +152,7 @@ def factors(ordinal, return_latex=False):
 
         fs += coeff_factor
 
-        terms = [
-            Ordinal(
-                exponent=subtract(t.exponent, least_term.exponent),
-                coefficient=t.coefficient,
-            )
-            for t in terms
-        ]
+        terms = divide_terms_by_ordinal(terms, least_term)
 
     if return_latex:
         return LatexRepr.from_factors(fs)
