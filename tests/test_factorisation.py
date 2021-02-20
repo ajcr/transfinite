@@ -79,7 +79,7 @@ def test_subtract(a, b):
 def test_factorise_term(a):
     fs = factorise_term(a)
     assert multiply_factors(fs) == a
-    assert all(is_finite_ordinal(f) or f.is_prime() for f, _ in fs)
+    assert all(is_finite_ordinal(f) and f > 1 or f.is_prime() for f, _ in fs)
 
 
 @pytest.mark.parametrize(
@@ -88,7 +88,7 @@ def test_factorise_term(a):
 def test_factorise_term_successor(a):
     fs = factorise_term_successor(a)
     assert multiply_factors(fs) == a + 1
-    assert all(is_finite_ordinal(f) or f.is_prime() for f, _ in fs)
+    assert all(is_finite_ordinal(f) and f > 1 or f.is_prime() for f, _ in fs)
 
 
 @pytest.mark.parametrize(
@@ -130,7 +130,7 @@ def test_factors(a):
 
     # Check the factorisation is correct
     assert all(
-        is_finite_ordinal(f) or f.is_prime() for f in ordinals
+        is_finite_ordinal(f) and f > 1 or f.is_prime() for f in ordinals
     ), "Not all factors are prime"
     assert multiply_factors(fs) == a, "Incorrect factorisation"
 

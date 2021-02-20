@@ -97,9 +97,13 @@ def factors(ordinal, return_latex=False):
     """
     Return the prime factors of the ordinal.
 
-    The factors are returned as a list of the form:
+    By default, the factors are returned as a list of the form:
 
       [(factor_1, exponent_1), (factor_2, exponent_2), ...]
+
+    If return_latex=True, then a LatexRepr object is returns which
+    shows the factors as a LaTeX string and renders in Jupyter
+    notebooks and consoles.
 
     Note: finite integers are not broken into prime factors.
     """
