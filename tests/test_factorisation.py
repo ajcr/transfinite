@@ -109,6 +109,7 @@ def test_factorise_term_successor(a):
         w ** w ** w * 4 + w ** w ** 2 + w ** (w * 7) + 21,
         w ** w ** (w * 4) + w ** (w + 1) + w ** w + 13,
         w ** w ** (w * 4) + w ** (w ** 2 + 1) * 7 + w ** w + 13,
+        w ** w ** (w * 4 + 2) * 11 + w ** (w ** 2 + w + 1) * 7 + w ** w + 13,
     ],
 )
 def test_factors(a):
