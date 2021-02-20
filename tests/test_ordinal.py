@@ -471,7 +471,7 @@ def test_is_limit(a, expected):
 )
 @pytest.mark.parametrize(
     "a,expected_error",
-    [(-2, ValueError), (2.1, TypeError), ("2", TypeError), (7j, TypeError)],
+    [(-2, TypeError), (2.1, TypeError), ("2", TypeError), (7j, TypeError)],
 )
 def test_invalid_types_operation(op, a, expected_error):
     with pytest.raises(expected_error):

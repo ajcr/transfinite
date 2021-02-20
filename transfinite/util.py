@@ -4,11 +4,7 @@ def is_non_negative_int(n):
 
     If n is a negative integer raise a ValueError, else return False.
     """
-    if isinstance(n, int) and n >= 0:
-        return True
-    if isinstance(n, int):
-        raise ValueError(f"int value must be non-negative (got {n})")
-    return False
+    return isinstance(n, int) and n >= 0
 
 
 def as_latex(ordinal):
