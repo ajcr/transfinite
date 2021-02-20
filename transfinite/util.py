@@ -1,8 +1,7 @@
-def is_non_negative_int(n):
+def is_finite_ordinal(n):
     """
-    Return True if n is a non-negative integer.
+    Return True if n is a finite ordinal (non-negative int).
 
-    If n is a negative integer raise a ValueError, else return False.
     """
     return isinstance(n, int) and n >= 0
 

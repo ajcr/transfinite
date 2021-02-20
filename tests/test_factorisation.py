@@ -3,7 +3,7 @@ from itertools import groupby
 import pytest
 
 from transfinite import w
-from transfinite.util import is_non_negative_int
+from transfinite.util import is_finite_ordinal
 from transfinite.factorisation import (
     factors,
     subtract,
@@ -71,7 +71,7 @@ def test_subtract(a, b):
 def test_factorise_term(a):
     fs = factorise_term(a)
     assert multiply_factors(fs) == a
-    assert all(is_non_negative_int(f) or f.is_prime() for f, _ in fs)
+    assert all(is_finite_ordinal(f) or f.is_prime() for f, _ in fs)
 
 
 @pytest.mark.parametrize(
@@ -80,7 +80,7 @@ def test_factorise_term(a):
 def test_factorise_term_successor(a):
     fs = factorise_term_successor(a)
     assert multiply_factors(fs) == a + 1
-    assert all(is_non_negative_int(f) or f.is_prime() for f, _ in fs)
+    assert all(is_finite_ordinal(f) or f.is_prime() for f, _ in fs)
 
 
 @pytest.mark.parametrize(
@@ -117,14 +117,12 @@ def test_factors(a):
 
     # Check the factorisation is correct
     assert all(
-        is_non_negative_int(f) or f.is_prime() for f in ordinals
+        is_finite_ordinal(f) or f.is_prime() for f in ordinals
     ), "Not all factors are prime"
     assert multiply_factors(fs) == a, "Incorrect factorisation"
 
     # Check the grouping and order of factors is correct
-    grouper = groupby(
-        ordinals, key=lambda x: is_non_negative_int(x) or x.is_successor()
-    )
+    grouper = groupby(ordinals, key=lambda x: is_finite_ordinal(x) or x.is_successor())
     groups = [(is_successor, list(ords)) for is_successor, ords in grouper]
 
     assert len(groups) <= 2, "Factors not ordered by limit/successor"

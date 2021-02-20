@@ -1,5 +1,5 @@
 from transfinite.ordinal import Ordinal
-from transfinite.util import is_non_negative_int
+from transfinite.util import is_finite_ordinal
 
 
 def subtract(a, b):
@@ -10,10 +10,10 @@ def subtract(a, b):
     if a <= b:
         raise ValueError("First argument must be greater than second argument")
 
-    if is_non_negative_int(a):
+    if is_finite_ordinal(a):
         return a - b
 
-    if is_non_negative_int(b) or a.exponent > b.exponent:
+    if is_finite_ordinal(b) or a.exponent > b.exponent:
         return a
 
     if a.exponent == b.exponent and a.coefficient == b.coefficient:
@@ -40,7 +40,7 @@ def ordinal_terms(a):
     """
     terms = []
 
-    while not is_non_negative_int(a):
+    while not is_finite_ordinal(a):
         t = Ordinal(exponent=a.exponent, coefficient=a.coefficient)
         terms.append(t)
         a = a.addend
@@ -67,7 +67,7 @@ def factorise_term(term):
     fs = []
 
     for t in ordinal_terms(term.exponent):
-        if is_non_negative_int(t):
+        if is_finite_ordinal(t):
             fs.append((Ordinal(), t))
         else:
             fs.append((Ordinal(exponent=Ordinal(t.exponent)), t.coefficient))
@@ -103,7 +103,7 @@ def factors(ordinal):
 
     Note: finite integers are not broken into prime factors.
     """
-    if is_non_negative_int(ordinal) or ordinal.is_prime():
+    if is_finite_ordinal(ordinal) or ordinal.is_prime():
         return [(ordinal, 1)]
 
     terms = ordinal_terms(ordinal)
