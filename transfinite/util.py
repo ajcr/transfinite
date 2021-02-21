@@ -62,11 +62,14 @@ class LatexRepr:
             # greater than 1, or if ordinal.addend is greater than 0
             #
             #   (w, 1)        -> w
-            #   (w, 2)        -> w^2
+            #   (w, 2)        -> (w)^2
             #   (w + 1, 1)    -> (w + 1)
             #   (w + 1, 2)    -> (w + 1)^2
             #   (w**2 + 1, 1) -> (w^2 + 1)
             #   (w**2 + 1, 3) -> (w^2 + 1)^3
+            #
+            # Note that since factors are prime, there are some cases
+            # that do not need to be covered here (e.g. w*n).
 
             else:
                 latex_ordinal = as_latex(ordinal)
@@ -77,7 +80,7 @@ class LatexRepr:
                     f = latex_ordinal
 
                 if exponent > 1:
-                    f += f"^{exponent}"
+                    f += f"^{{{exponent}}}"
 
                 fs_latex.append(f)
 
