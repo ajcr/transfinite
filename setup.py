@@ -9,7 +9,7 @@ for easy readability.
 
 setup(
     name="transfinite",
-    version="0.4.0",
+    version="0.5.0",
     description="Transfinite ordinals for Python",
     long_description=LONG_DESCRIPTION,
     author="Alex Riley",
