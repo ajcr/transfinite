@@ -3,7 +3,7 @@ from itertools import groupby
 import pytest
 
 from transfinite import w
-from transfinite.util import is_finite_ordinal
+from transfinite.util import is_finite_ordinal, multiply_factors
 from transfinite.factorisation import (
     factors,
     subtract,
@@ -12,23 +12,12 @@ from transfinite.factorisation import (
 )
 
 
-def multiply_factors(fs):
+def has_equal_consecutive_elements(seq):
     """
-    Return the product of the factors in the sequence.
+    Return True if the sequence has one or more pairs of consecutive equal elements.
 
     """
-    a = 1
-    for ordinal, exponent in fs:
-        a *= ordinal ** exponent
-    return a
-
-
-def is_not_equal_consecutive(fs):
-    """
-    Return True if the sequence has no consecutive equal elements.
-
-    """
-    return all(first != second for first, second in zip(fs, fs[1:]))
+    return any(first == second for first, second in zip(seq, seq[1:]))
 
 
 @pytest.mark.parametrize(
@@ -131,23 +120,24 @@ def test_factorise_term_successor(a):
 )
 def test_factors(a):
     fs = factors(a)
-    ordinals = [f for f, _ in fs]
 
     # Check the factorisation is correct
     assert all(
-        is_finite_ordinal(f) and f > 1 or f.is_prime() for f in ordinals
+        is_finite_ordinal(f) and f > 1 or f.is_prime() for f in fs.ordinals
     ), "Not all factors are prime"
-    assert multiply_factors(fs) == a, "Incorrect factorisation"
+    assert fs.product() == a, "Incorrect factorisation"
 
     # Check the grouping and order of factors is correct
-    grouper = groupby(ordinals, key=lambda x: is_finite_ordinal(x) or x.is_successor())
+    grouper = groupby(
+        fs.ordinals, key=lambda x: is_finite_ordinal(x) or x.is_successor()
+    )
     groups = [(is_successor, list(ords)) for is_successor, ords in grouper]
 
     assert len(groups) <= 2, "Factors not ordered by limit/successor"
 
     # If there are only successor ordinals as factors there is no need to check further
     if len(groups) == 1 and groups[0][0]:
-        assert is_not_equal_consecutive(
+        assert not has_equal_consecutive_elements(
             groups[0][1]
         ), "List of successor factors contains consecutive ordinals that are equal"
         return
@@ -159,6 +149,6 @@ def test_factors(a):
     assert groups[0][1] == sorted(
         groups[0][1], reverse=True
     ), "Successor ordinals not sorted in descending order"
-    assert is_not_equal_consecutive(
+    assert not has_equal_consecutive_elements(
         groups[0][1]
     ), "List of limit factors contains consecutive ordinals that are equal"

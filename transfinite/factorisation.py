@@ -1,5 +1,6 @@
 from transfinite.ordinal import Ordinal
-from transfinite.util import is_finite_ordinal, LatexRepr
+from transfinite.ordinal_factors import OrdinalFactors
+from transfinite.util import is_finite_ordinal
 
 
 def subtract(a, b):
@@ -106,17 +107,9 @@ def factorise_term_successor(ordinal_term):
     return fs
 
 
-def factors(ordinal, return_latex=False):
+def factors(ordinal):
     """
     Return the prime factors of the ordinal.
-
-    By default, the factors are returned as a list of the form:
-
-      [(factor_1, exponent_1), (factor_2, exponent_2), ...]
-
-    If return_latex=True, then a LatexRepr object is returns which
-    shows the factors as a LaTeX string and renders in Jupyter
-    notebooks and consoles.
 
     Note: finite integers are not broken into prime factors.
     """
@@ -150,11 +143,9 @@ def factors(ordinal, return_latex=False):
         else:
             fs += [(ordinal_factor, exp)]
 
-        fs += coeff_factor
+        if coeff_factor:
+            fs += coeff_factor
 
         terms = divide_terms_by_ordinal(terms, least_term)
 
-    if return_latex:
-        return LatexRepr.from_factors(fs)
-
-    return fs
+    return OrdinalFactors(fs)

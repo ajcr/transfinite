@@ -6,7 +6,7 @@ Transfinite [ordinal arithmetic](https://en.wikipedia.org/wiki/Ordinal_arithmeti
 
 ## Installation
 
-Works with Python 3, just install with:
+Works with Python 3. Can be installed via pip using:
 
 ```
 pip install transfinite
@@ -14,13 +14,13 @@ pip install transfinite
 
 ## Usage
 
-For a very basic introduction to ordinal arithmetic, look at Wikipedia or see the notebook [here](https://github.com/ajcr/transfinite/blob/master/notebooks/ordinal_arithmetic_basics.ipynb).
+For a basic introduction to ordinal arithmetic, look at Wikipedia or see the notebook [here](https://github.com/ajcr/transfinite/blob/master/notebooks/ordinal_arithmetic_basics.ipynb).
 
-Here's a quick demonstration in Jupyter's qtconsole (note that the variable `w` is the first transfinite number). First, some ordinal arithmetic:
+Here's a quick demonstration of the library in Jupyter's qtconsole (note that the variable `w` is the first transfinite number). First, some ordinal arithmetic:
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/transfinite_demo.png)
 
-Ordinal factorisation is also implemented. Any composite ordinal can be written as a product of prime ordinals:
+Ordinal factorisation is also implemented. Any composite ordinal `a` can be written as a product of two or more prime ordinals less than `a`:
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/transfinite_demo_2.png)
 
