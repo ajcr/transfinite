@@ -68,17 +68,13 @@ class Ordinal:
         """
         Return true if ordinal is multiplicatively indecomposable.
 
-        These are ordinals of the form  w**w**a  for any ordinal a.
+        These are ordinals of the form  w**w**a  for an ordinal a
+        which is either 0 or such that w**a is a gamma ordinal.
         """
-        return (
-            self.coefficient == 1
-            and self.addend == 0
-            and (
-                self.exponent == 1
-                or not isinstance(self.exponent, int)
-                and self.exponent.coefficient == 1
-                and self.exponent.addend == 0
-            )
+        return self.is_gamma() and (
+            self.exponent == 1
+            or not is_finite_ordinal(self.exponent)
+            and self.exponent.is_gamma()
         )
 
     def is_prime(self):
