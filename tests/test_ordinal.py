@@ -399,6 +399,10 @@ def test_multiplication(a, b, expected):
             Ordinal(exponent=Ordinal(), addend=1),
             Ordinal(exponent=Ordinal(exponent=Ordinal()), coefficient=3),
         ),
+        # 2**(w**2 + w) == w**(w + 1)
+        (2, Ordinal(exponent=2, addend=Ordinal()), Ordinal(exponent=Ordinal(addend=1))),
+        # 2**(w**2 + 3) == w**w * 8
+        (2, Ordinal(exponent=2, addend=3), Ordinal(exponent=Ordinal(), coefficient=8)),
         # (w**(w**(w*5) + w**w + 2)) ** 2 == w**(w**(w*5)*2+w**w+2)
         (
             Ordinal(
