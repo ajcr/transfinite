@@ -403,6 +403,18 @@ def test_multiplication(a, b, expected):
         (2, Ordinal(exponent=2, addend=Ordinal()), Ordinal(exponent=Ordinal(addend=1))),
         # 2**(w**2 + 3) == w**w * 8
         (2, Ordinal(exponent=2, addend=3), Ordinal(exponent=Ordinal(), coefficient=8)),
+        # 2**(w**3 * 7) == w**(w**2 * 7)
+        (
+            2,
+            Ordinal(exponent=3, coefficient=7),
+            Ordinal(exponent=Ordinal(exponent=2, coefficient=7)),
+        ),
+        # 2**(w**3 * 7 + 5) == w**(w**2 * 7) * 32
+        (
+            2,
+            Ordinal(exponent=3, coefficient=7, addend=5),
+            Ordinal(exponent=Ordinal(exponent=2, coefficient=7), coefficient=32),
+        ),
         # (w**(w**(w*5) + w**w + 2)) ** 2 == w**(w**(w*5)*2+w**w+2)
         (
             Ordinal(

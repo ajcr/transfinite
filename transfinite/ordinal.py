@@ -209,7 +209,7 @@ class Ordinal:
         # n**w**k == w**w**(k - 1) for all 1 < n,k < w
         if is_finite_ordinal(self.exponent):
             return (
-                Ordinal(Ordinal((self.exponent - 1) * self.coefficient))
+                Ordinal(Ordinal(self.exponent - 1, self.coefficient))
                 * other ** self.addend
             )
         # n**w**a == w**w**a for all 1 < n < w and a >= w
