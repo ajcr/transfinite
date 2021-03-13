@@ -154,7 +154,7 @@ class Ordinal:
 
     def __add__(self, other):
 
-        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
+        if not is_ordinal(other):
             return NotImplemented
 
         # (w**a*b + c) + x == w**a*b + (c + x)
@@ -178,7 +178,7 @@ class Ordinal:
 
     def __mul__(self, other):
 
-        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
+        if not is_ordinal(other):
             return NotImplemented
 
         if other == 0:
@@ -208,7 +208,7 @@ class Ordinal:
 
     def __pow__(self, other):
 
-        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
+        if not is_ordinal(other):
             return NotImplemented
 
         # Finite powers are computed using repeated multiplication
@@ -237,3 +237,11 @@ class Ordinal:
 
         # n**(w**a*c + b) == w**(w**a*c) * n**b
         return Ordinal(Ordinal(self.exponent, self.coefficient)) * other**self.addend
+
+
+def is_ordinal(a):
+    """
+    Return True if a is a finite or infinite ordinal.
+
+    """
+    return is_finite_ordinal(a) or isinstance(a, Ordinal)
