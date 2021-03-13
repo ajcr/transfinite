@@ -21,9 +21,7 @@ def subtract(a, b):
         return subtract(a.addend, b.addend)
 
     # Here we know that a.coefficient > b.coefficient
-    return Ordinal(
-        exponent=a.exponent, coefficient=a.coefficient - b.coefficient, addend=a.addend
-    )
+    return Ordinal(a.exponent, a.coefficient - b.coefficient, a.addend)
 
 
 def divide_terms_by_ordinal(terms, ordinal):
@@ -31,12 +29,7 @@ def divide_terms_by_ordinal(terms, ordinal):
     Divide each term in the list by the specified ordinal.
 
     """
-    return [
-        Ordinal(
-            exponent=subtract(t.exponent, ordinal.exponent), coefficient=t.coefficient
-        )
-        for t in terms
-    ]
+    return [Ordinal(subtract(t.exponent, ordinal.exponent), t.coefficient) for t in terms]
 
 
 def ordinal_terms(a):
