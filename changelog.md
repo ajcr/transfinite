@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.2] - 2020-03-13
+### Fixed
+- Fixed bug in `__rpow__` when evaluating `n**(w**k*c)`
+- Improvements to code readability
+
 ## [0.5.1] - 2020-03-07
 ### Fixed
 - Fixed issue when raising finite power to transfinite power (https://github.com/ajcr/transfinite/issues/6)
