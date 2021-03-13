@@ -4,11 +4,6 @@ repos:
     hooks:
     - id: end-of-file-fixer
     - id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 19.3b0
-    hooks:
-    - id: black
-      args: [--line-length, "88", --target-version, py37]
 -   repo: https://github.com/pre-commit/mirrors-pylint
     rev: 'v2.3.1'
     hooks:
@@ -21,4 +16,5 @@ repos:
           --disable, import-error,
           --disable, duplicate-code,
           --disable, consider-using-ternary,
+          --disable, line-too-long,
       ]

@@ -153,64 +153,87 @@ class Ordinal:
             return NotImplemented
 
     def __add__(self, other):
-        try:
-            if is_finite_ordinal(other) or self.exponent > other.exponent:
-                return Ordinal(self.exponent, self.coefficient, self.addend + other)
-        except AttributeError:
+
+        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
             return NotImplemented
+
+        # (w**a*b + c) + x == w**a*b + (c + x)
+        if is_finite_ordinal(other) or self.exponent > other.exponent:
+            return Ordinal(self.exponent, self.coefficient, self.addend + other)
+
+        # (w**a*b + c) + (w**a*d + e) == w**a*(b + d) + e
         if self.exponent == other.exponent:
-            return Ordinal(
-                self.exponent, self.coefficient + other.coefficient, other.addend
-            )
+            return Ordinal(self.exponent, self.coefficient + other.coefficient, other.addend)
+
+        # other is strictly greater than self
         return other
 
     def __radd__(self, other):
+
         if not is_finite_ordinal(other):
             return NotImplemented
+
+        # n + a == a
         return self
 
     def __mul__(self, other):
-        if is_finite_ordinal(other):
-            return other and Ordinal(
-                self.exponent, self.coefficient * other, self.addend
-            )
-        try:
-            return Ordinal(
-                self.exponent + other.exponent,
-                other.coefficient,
-                self.addend * other.addend + self * other.addend,
-            )
-        except AttributeError:
+
+        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
             return NotImplemented
+
+        if other == 0:
+            return 0
+
+        # (w**a*b + c) * n == w**a * (b*n) + c
+        if is_finite_ordinal(other):
+            return Ordinal(self.exponent, self.coefficient * other, self.addend)
+
+        # (w**a*b + c) * (w**x*y + z) == w**(a + x)*y + (c*z + (w**a*b + c)*z)
+        return Ordinal(
+            self.exponent + other.exponent,
+            other.coefficient,
+            self.addend * other.addend + self * other.addend,
+        )
 
     def __rmul__(self, other):
+
         if not is_finite_ordinal(other):
             return NotImplemented
-        return other and Ordinal(self.exponent, self.coefficient, other * self.addend)
+
+        if other == 0:
+            return 0
+
+        # n * (w**a*b + c) == w**a*b + (n*c)
+        return Ordinal(self.exponent, self.coefficient, other * self.addend)
 
     def __pow__(self, other):
-        if is_finite_ordinal(other):
-            return exp_by_squaring(self, other)
-        try:
-            return (
-                Ordinal(self.exponent * Ordinal(other.exponent, other.coefficient))
-                * self ** other.addend
-            )
-        except AttributeError:
+
+        if not is_finite_ordinal(other) and not isinstance(other, Ordinal):
             return NotImplemented
 
+        # Finite powers are computed using repeated multiplication
+        if is_finite_ordinal(other):
+            return exp_by_squaring(self, other)
+
+        # (w**a*b + c) ** (w**x*y + z) == (w**(a * w**x * y)) * (w**a*b + c)**z
+        return Ordinal(self.exponent * Ordinal(other.exponent, other.coefficient)) * self**other.addend
+
     def __rpow__(self, other):
+
         if not is_finite_ordinal(other):
             return NotImplemented
+
+        # 0**a == 0 and 1**a == 1
         if other in (0, 1):
             return other
+
+        # n**(w*c + a) == (w**c) * (n**a)
         if self.exponent == 1:
             return Ordinal(self.coefficient, other ** self.addend)
-        # n**w**k == w**w**(k - 1) for all 1 < n,k < w
+
+        # n**(w**m*c + a) == w**(w**(m-1) * c) * n**a
         if is_finite_ordinal(self.exponent):
-            return (
-                Ordinal(Ordinal(self.exponent - 1, self.coefficient))
-                * other ** self.addend
-            )
-        # n**w**a == w**w**a for all 1 < n < w and a >= w
-        return Ordinal(Ordinal(self.exponent, self.coefficient)) * other ** self.addend
+            return Ordinal(Ordinal(self.exponent - 1, self.coefficient)) * other**self.addend
+
+        # n**(w**a*c + b) == w**(w**a*c) * n**b
+        return Ordinal(Ordinal(self.exponent, self.coefficient)) * other**self.addend
