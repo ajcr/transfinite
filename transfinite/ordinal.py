@@ -3,6 +3,10 @@ from functools import total_ordering
 from transfinite.util import is_finite_ordinal, as_latex, exp_by_squaring
 
 
+class OrdinalConstructionError(Exception):
+    pass
+
+
 @total_ordering
 class Ordinal:
     """
@@ -23,37 +27,36 @@ class Ordinal:
 
     def __init__(self, exponent=1, coefficient=1, addend=0):
 
-        if not isinstance(exponent, (int, Ordinal)):
-            raise TypeError("exponent must be an Ordinal or an integer greater than 0")
+        if exponent == 0 or not is_ordinal(exponent):
+            raise OrdinalConstructionError("exponent must be an Ordinal or an integer greater than 0")
 
-        if exponent < 1:
-            raise ValueError("exponent must be an Ordinal or an integer greater than 0")
+        if coefficient == 0 or not is_finite_ordinal(coefficient):
+            raise OrdinalConstructionError("coefficient must be an integer greater than 0")
 
-        if not isinstance(coefficient, int):
-            raise TypeError("coefficient must be an integer greater than 0")
-
-        if coefficient < 1:
-            raise ValueError("coefficient must be an integer greater than 0")
-
-        if not isinstance(addend, (int, Ordinal)):
-            raise TypeError("addend must be an Ordinal or a non-negative integer")
-
-        if isinstance(addend, int) and addend < 0:
-            raise ValueError("addend must be an Ordinal or a non-negative integer")
+        if not is_ordinal(addend):
+            raise OrdinalConstructionError("addend must be an Ordinal or a non-negative integer")
 
         if isinstance(addend, Ordinal) and addend.exponent >= exponent:
-            raise ValueError(f"addend.exponent must be less than exponent {exponent}")
+            raise OrdinalConstructionError("addend.exponent must be less than self.exponent")
 
         self.exponent = exponent
         self.coefficient = coefficient
         self.addend = addend
 
     def is_limit(self):
+        """
+        Return true if ordinal is a limit ordinal.
+
+        """
         if is_finite_ordinal(self.addend):
             return self.addend == 0
         return self.addend.is_limit()
 
     def is_successor(self):
+        """
+        Return true if ordinal is a successor ordinal.
+
+        """
         return not self.is_limit()
 
     def is_gamma(self):

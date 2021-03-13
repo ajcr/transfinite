@@ -3,31 +3,31 @@ import operator
 
 import pytest
 
-from transfinite.ordinal import Ordinal
+from transfinite.ordinal import Ordinal, OrdinalConstructionError
 from transfinite.util import as_latex
 
 
 @pytest.mark.parametrize(
-    "kwargs,expected_error",
+    "kwargs",
     [
-        ({"exponent": 0}, ValueError),
-        ({"exponent": -1}, ValueError),
-        ({"exponent": -3.14}, TypeError),
-        ({"exponent": "0"}, TypeError),
-        ({"coefficient": 0}, ValueError),
-        ({"coefficient": -1}, ValueError),
-        ({"coefficient": -3.14}, TypeError),
-        ({"coefficient": "0"}, TypeError),
-        ({"coefficient": Ordinal()}, TypeError),
-        ({"addend": -1}, ValueError),
-        ({"addend": -3.14}, TypeError),
-        ({"addend": "0"}, TypeError),
-        ({"exponent": 1, "addend": Ordinal(exponent=1)}, ValueError),
-        ({"exponent": Ordinal(), "addend": Ordinal(exponent=Ordinal())}, ValueError),
+        {"exponent": 0},
+        {"exponent": -1},
+        {"exponent": -3.14},
+        {"exponent": "0"},
+        {"coefficient": 0},
+        {"coefficient": -1},
+        {"coefficient": -3.14},
+        {"coefficient": "0"},
+        {"coefficient": Ordinal()},
+        {"addend": -1},
+        {"addend": -3.14},
+        {"addend": "0"},
+        {"exponent": 1, "addend": Ordinal(exponent=1)},
+        {"exponent": Ordinal(), "addend": Ordinal(exponent=Ordinal())},
     ],
 )
-def test_invalid_args_to_class(kwargs, expected_error):
-    with pytest.raises(expected_error):
+def test_invalid_args_to_class(kwargs):
+    with pytest.raises(OrdinalConstructionError):
         Ordinal(**kwargs)
 
 
