@@ -128,32 +128,16 @@ class Ordinal:
         return hash((hash(self.exponent), hash(self.coefficient), hash(self.addend)))
 
     def __eq__(self, other):
-        try:
-            return (
-                self.exponent == other.exponent
-                and self.coefficient == other.coefficient
-                and self.addend == other.addend
-            )
-        except AttributeError:
-            return False
+        if isinstance(other, Ordinal):
+            return self.as_tuple() == other.as_tuple()
+        return False
 
     def __lt__(self, other):
+        if isinstance(other, Ordinal):
+            return self.as_tuple() < other.as_tuple()
         if is_finite_ordinal(other):
             return False
-        try:
-            return (
-                # smaller exponent on leading term
-                self.exponent < other.exponent
-                # or equal exponent on leading term and smaller coefficient
-                or self.exponent == other.exponent
-                and self.coefficient < other.coefficient
-                # or equal leading term and smaller addend
-                or self.exponent == other.exponent
-                and self.coefficient == other.coefficient
-                and self.addend < other.addend
-            )
-        except AttributeError:
-            return NotImplemented
+        return NotImplemented
 
     def __add__(self, other):
 
@@ -240,6 +224,13 @@ class Ordinal:
 
         # n**(w**a*c + b) == w**(w**a*c) * n**b
         return Ordinal(Ordinal(self.exponent, self.coefficient)) * other**self.addend
+
+    def as_tuple(self):
+        """
+        Return the ordinal as a tuple of (exponent, coefficient, addend).
+
+        """
+        return self.exponent, self.coefficient, self.addend
 
 
 def is_ordinal(a):
