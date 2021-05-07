@@ -20,8 +20,16 @@ Here's a quick demonstration of the library in Jupyter's qtconsole (note that th
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/transfinite_demo.png)
 
-Ordinal factorisation is also implemented. Any composite ordinal `a` can be written as a product of two or more prime ordinals less than `a`:
+The Ordinal class implements several methods which can be used to check properties of the ordinal:
+
+- `Ordinal.is_limit()`, returns True if the ordinal is a [limit ordinal](https://en.wikipedia.org/wiki/Limit_ordinal).
+- `Ordinal.is_successor()`, returns True if the ordinal is a [successor ordinal](https://en.wikipedia.org/wiki/Successor_ordinal).
+- `Ordinal.is_gamma()`, returns True if the ordinal is [additively indecomposable](https://en.wikipedia.org/wiki/Additively_indecomposable_ordinal).
+- `Ordinal.is_delta()`, returns True if the ordinal is [multiplicatively indecomposable](https://en.wikipedia.org/wiki/Additively_indecomposable_ordinal#Multiplicatively_indecomposable).
+- `Ordinal.is_prime()`, returns True if the ordinal is prime.
+
+[Ordinal factorisation](https://en.wikipedia.org/wiki/Ordinal_arithmetic#Factorization_into_primes) into prime ordinals is also implemented. Any composite ordinal `a` can be written as a product of two or more prime ordinals less than `a`:
 
 ![alt tag](https://github.com/ajcr/transfinite/blob/master/images/transfinite_demo_2.png)
 
-The Ordinal class implements an `is_prime()` method which will indicate if the ordinal object is prime or not.
+Note that finite ordinals are not factorised using this method.

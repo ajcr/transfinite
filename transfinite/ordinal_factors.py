@@ -15,10 +15,7 @@ class OrdinalFactors:
 
         """
         self.factors = factors
-
-    @property
-    def ordinals(self):
-        return [ordinal for ordinal, _ in self.factors]
+        self.ordinals = [ordinal for ordinal, _ in self.factors]
 
     def __str__(self):
         return str(self.factors)
@@ -30,16 +27,16 @@ class OrdinalFactors:
         return f"${self.as_latex()}$"
 
     def __getitem__(self, item):
-        return self.factors[item]
+        return self.ordinals[item]
 
     def __iter__(self):
-        return iter(self.factors)
-
-    def __bool__(self):
-        return bool(self.factors)
+        return iter(self.ordinals)
 
     def __contains__(self, other):
         return other in self.ordinals
+
+    def __bool__(self):
+        return bool(self.factors)
 
     def product(self):
         "Return the product of the factors."
