@@ -1,3 +1,6 @@
+from itertools import groupby
+from operator import itemgetter
+
 def is_finite_ordinal(n):
     """
     Return True if n is a finite ordinal (non-negative int).
@@ -46,3 +49,13 @@ def multiply_factors(factors):
     for ordinal, exponent in factors:
         prod *= ordinal ** exponent
     return prod
+
+
+def group_factors(factors):
+    """
+    Return the factors with the exponents of consecutive equal
+    ordinals added together.
+
+    """
+    grouped_factors = groupby(factors, key=itemgetter(0))
+    return [(ordinal, sum(exp for _, exp in fs)) for ordinal, fs in grouped_factors]
