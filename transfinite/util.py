@@ -33,8 +33,8 @@ def as_latex(ordinal):
     term = r"\omega"
     if ordinal.exponent != 1:
         term += f"^{{{as_latex(ordinal.exponent)}}}"
-    if ordinal.coefficient != 1:
-        term += rf"\cdot{as_latex(ordinal.coefficient)}"
+    if ordinal.copies != 1:
+        term += rf"\cdot{as_latex(ordinal.copies)}"
     if ordinal.addend != 0:
         term += f"+{as_latex(ordinal.addend)}"
     return term

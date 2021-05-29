@@ -17,11 +17,11 @@ def subtract(a, b):
     if is_finite_ordinal(b) or a.exponent > b.exponent:
         return a
 
-    if a.exponent == b.exponent and a.coefficient == b.coefficient:
+    if a.exponent == b.exponent and a.copies == b.copies:
         return subtract(a.addend, b.addend)
 
-    # Here we know that a.coefficient > b.coefficient
-    return Ordinal(a.exponent, a.coefficient - b.coefficient, a.addend)
+    # Here we know that a.copies > b.copies
+    return Ordinal(a.exponent, a.copies - b.copies, a.addend)
 
 
 def divide_terms_by_ordinal(terms, ordinal):
@@ -29,7 +29,7 @@ def divide_terms_by_ordinal(terms, ordinal):
     Divide each term in the list by the specified ordinal.
 
     """
-    return [Ordinal(subtract(t.exponent, ordinal.exponent), t.coefficient) for t in terms]
+    return [Ordinal(subtract(t.exponent, ordinal.exponent), t.copies) for t in terms]
 
 
 def ordinal_terms(ordinal):
@@ -48,7 +48,7 @@ def ordinal_terms(ordinal):
     terms = []
 
     while not is_finite_ordinal(ordinal):
-        term = Ordinal(exponent=ordinal.exponent, coefficient=ordinal.coefficient)
+        term = Ordinal(exponent=ordinal.exponent, copies=ordinal.copies)
         terms.append(term)
         ordinal = ordinal.addend
 
@@ -77,10 +77,10 @@ def factorise_term(term):
         if is_finite_ordinal(t):
             factors_.append((Ordinal(), t))
         else:
-            factors_.append((Ordinal(exponent=Ordinal(t.exponent)), t.coefficient))
+            factors_.append((Ordinal(exponent=Ordinal(t.exponent)), t.copies))
 
-    if term.coefficient > 1:
-        factors_.append((term.coefficient, 1))
+    if term.copies > 1:
+        factors_.append((term.copies, 1))
 
     return factors_
 
@@ -90,7 +90,7 @@ def factorise_term_successor(ordinal_term):
     Given a term (w**e * c) return the factors of its successor.
 
     Note that since (w**e + 1) is prime, the method returns this
-    ordinal as a factor, as well as the coefficient if not 1:
+    ordinal as a factor, as well as the copies if not 1:
 
         term -> successor -> factors
         w    -> w + 1     -> [(w + 1, 1)]
@@ -99,8 +99,8 @@ def factorise_term_successor(ordinal_term):
     """
     factors_ = [(Ordinal(exponent=ordinal_term.exponent, addend=1), 1)]
 
-    if ordinal_term.coefficient > 1:
-        factors_.append((ordinal_term.coefficient, 1))
+    if ordinal_term.copies > 1:
+        factors_.append((ordinal_term.copies, 1))
 
     return factors_
 

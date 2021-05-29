@@ -17,21 +17,21 @@ class Ordinal:
 
           (exponent)
          ^
-        w . (coefficient) + (addend)
+        w . (copies) + (addend)
 
-    w denotes the first infinite ordinal, (coefficient) is an integer,
+    w denotes the first infinite ordinal, (copies) is an integer,
     (exponent) and (addend) can be either an integer or an instance of
     this Ordinal class.
 
     """
 
-    def __init__(self, exponent=1, coefficient=1, addend=0):
+    def __init__(self, exponent=1, copies=1, addend=0):
 
         if exponent == 0 or not is_ordinal(exponent):
             raise OrdinalConstructionError("exponent must be an Ordinal or an integer greater than 0")
 
-        if coefficient == 0 or not is_finite_ordinal(coefficient):
-            raise OrdinalConstructionError("coefficient must be an integer greater than 0")
+        if copies == 0 or not is_finite_ordinal(copies):
+            raise OrdinalConstructionError("copies must be an integer greater than 0")
 
         if not is_ordinal(addend):
             raise OrdinalConstructionError("addend must be an Ordinal or a non-negative integer")
@@ -40,7 +40,7 @@ class Ordinal:
             raise OrdinalConstructionError("addend.exponent must be less than self.exponent")
 
         self.exponent = exponent
-        self.coefficient = coefficient
+        self.copies = copies
         self.addend = addend
 
     def is_limit(self):
@@ -65,7 +65,7 @@ class Ordinal:
 
         These are ordinals of the form  w**a  for a > 0.
         """
-        return self.coefficient == 1 and self.addend == 0
+        return self.copies == 1 and self.addend == 0
 
     def is_delta(self):
         """
@@ -89,7 +89,7 @@ class Ordinal:
          * ordinal is a delta ordinal
 
         """
-        return self.coefficient == 1 and self.addend == 1 or self.is_delta()
+        return self.copies == 1 and self.addend == 1 or self.is_delta()
 
     def _repr_latex_(self):
         return f"${as_latex(self)}$"
@@ -101,14 +101,14 @@ class Ordinal:
         term = "w"
 
         # Only use parentheses for exponent if finite and greater than 1,
-        # or its addend is nonzero or its coefficient is greater than 1.
+        # or its addend is nonzero or its copies is greater than 1.
 
         if self.exponent == 1:
             pass
 
         elif (
             is_finite_ordinal(self.exponent)
-            or self.exponent.coefficient == 1
+            or self.exponent.copies == 1
             and self.exponent.addend == 0
         ):
             term += f"**{self.exponent}"
@@ -116,8 +116,8 @@ class Ordinal:
         else:
             term += f"**({self.exponent})"
 
-        if self.coefficient != 1:
-            term += f"*{self.coefficient}"
+        if self.copies != 1:
+            term += f"*{self.copies}"
 
         if self.addend != 0:
             term += f" + {self.addend}"
@@ -125,7 +125,7 @@ class Ordinal:
         return term
 
     def __hash__(self):
-        return hash((hash(self.exponent), hash(self.coefficient), hash(self.addend)))
+        return hash((hash(self.exponent), hash(self.copies), hash(self.addend)))
 
     def __eq__(self, other):
         if isinstance(other, Ordinal):
@@ -146,11 +146,11 @@ class Ordinal:
 
         # (w**a*b + c) + x == w**a*b + (c + x)
         if is_finite_ordinal(other) or self.exponent > other.exponent:
-            return Ordinal(self.exponent, self.coefficient, self.addend + other)
+            return Ordinal(self.exponent, self.copies, self.addend + other)
 
         # (w**a*b + c) + (w**a*d + e) == w**a*(b + d) + e
         if self.exponent == other.exponent:
-            return Ordinal(self.exponent, self.coefficient + other.coefficient, other.addend)
+            return Ordinal(self.exponent, self.copies + other.copies, other.addend)
 
         # other is strictly greater than self
         return other
@@ -173,12 +173,12 @@ class Ordinal:
 
         # (w**a*b + c) * n == w**a * (b*n) + c
         if is_finite_ordinal(other):
-            return Ordinal(self.exponent, self.coefficient * other, self.addend)
+            return Ordinal(self.exponent, self.copies * other, self.addend)
 
         # (w**a*b + c) * (w**x*y + z) == w**(a + x)*y + (c*z + (w**a*b + c)*z)
         return Ordinal(
             self.exponent + other.exponent,
-            other.coefficient,
+            other.copies,
             self.addend * other.addend + self * other.addend,
         )
 
@@ -191,7 +191,7 @@ class Ordinal:
             return 0
 
         # n * (w**a*b + c) == w**a*b + (n*c)
-        return Ordinal(self.exponent, self.coefficient, other * self.addend)
+        return Ordinal(self.exponent, self.copies, other * self.addend)
 
     def __pow__(self, other):
 
@@ -203,7 +203,7 @@ class Ordinal:
             return exp_by_squaring(self, other)
 
         # (w**a*b + c) ** (w**x*y + z) == (w**(a * w**x * y)) * (w**a*b + c)**z
-        return Ordinal(self.exponent * Ordinal(other.exponent, other.coefficient)) * self**other.addend
+        return Ordinal(self.exponent * Ordinal(other.exponent, other.copies)) * self**other.addend
 
     def __rpow__(self, other):
 
@@ -216,21 +216,21 @@ class Ordinal:
 
         # n**(w*c + a) == (w**c) * (n**a)
         if self.exponent == 1:
-            return Ordinal(self.coefficient, other ** self.addend)
+            return Ordinal(self.copies, other ** self.addend)
 
         # n**(w**m*c + a) == w**(w**(m-1) * c) * n**a
         if is_finite_ordinal(self.exponent):
-            return Ordinal(Ordinal(self.exponent - 1, self.coefficient)) * other**self.addend
+            return Ordinal(Ordinal(self.exponent - 1, self.copies)) * other**self.addend
 
         # n**(w**a*c + b) == w**(w**a*c) * n**b
-        return Ordinal(Ordinal(self.exponent, self.coefficient)) * other**self.addend
+        return Ordinal(Ordinal(self.exponent, self.copies)) * other**self.addend
 
     def as_tuple(self):
         """
-        Return the ordinal as a tuple of (exponent, coefficient, addend).
+        Return the ordinal as a tuple of (exponent, copies, addend).
 
         """
-        return self.exponent, self.coefficient, self.addend
+        return self.exponent, self.copies, self.addend
 
 
 def is_ordinal(a):
