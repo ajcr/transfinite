@@ -125,7 +125,7 @@ class Ordinal:
         return term
 
     def __hash__(self):
-        return hash((hash(self.exponent), hash(self.copies), hash(self.addend)))
+        return hash(self.as_tuple())
 
     def __eq__(self, other):
         if isinstance(other, Ordinal):
