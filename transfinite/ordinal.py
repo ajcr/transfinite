@@ -61,7 +61,7 @@ class Ordinal:
 
     def is_gamma(self):
         """
-        Return true if ordinal is addititively indecomposable.
+        Return true if ordinal is additively indecomposable.
 
         These are ordinals of the form  w**a  for a > 0.
         """
