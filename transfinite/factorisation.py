@@ -1,6 +1,6 @@
 from transfinite.ordinal import Ordinal
 from transfinite.ordinal_factors import OrdinalFactors
-from transfinite.util import is_finite_ordinal, group_factors
+from transfinite.util import is_finite_ordinal
 
 
 def subtract(a, b):
@@ -153,4 +153,4 @@ def factors(ordinal):
         factors_ += factorise_term_successor(least_term)
         terms = divide_terms_by_ordinal(terms, least_term)
 
-    return OrdinalFactors(group_factors(factors_))
+    return OrdinalFactors(factors_)

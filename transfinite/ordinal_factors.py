@@ -1,21 +1,46 @@
-from transfinite.util import is_finite_ordinal, as_latex, multiply_factors
+from collections.abc import Sequence
+
+from transfinite.util import (
+    as_latex,
+    group_factors,
+    is_finite_ordinal,
+    multiply_factors,
+)
 
 
-class OrdinalFactors:
+class OrdinalFactors(Sequence):
     """
-    Sequence object representing the factorisation of an ordinal.
+    Factors of an ordinal.
+
+    Since ordinal multiplication is non-commutative, the order
+    that the factors are multiplied in matters, hence this is
+    a Sequence object.
+
+    The object must be initialised from a initial sequence of
+    (ordinal, exponent) pairs.
+
+    The object has a _repr_latex_ method so that the sequence
+    of ordinals and exponents can be rendered in an easy to
+    read way in Jupyter.
 
     """
-
     def __init__(self, factors):
-        """
-        Initialise the object from a sequence of factors.
+        self.factors = group_factors(factors)
 
-        Each element of the sequence must be a (ordinal, exponent) pair.
+    def __iter__(self):
+        return iter(self.factors)
 
-        """
-        self.factors = factors
-        self.ordinals = [ordinal for ordinal, _ in self.factors]
+    def __contains__(self, other):
+        return other in (ordinal for ordinal, _ in self.factors)
+
+    def __len__(self):
+        return len(self.factors)
+
+    def __getitem__(self, item):
+        return self.factors[item]
+
+    def product(self):
+        return multiply_factors(self.factors)
 
     def __str__(self):
         return str(self.factors)
@@ -24,23 +49,8 @@ class OrdinalFactors:
         return f"OrdinalFactors({str(self)})"
 
     def _repr_latex_(self):
-        return f"${self.as_latex()}$"
-
-    def __getitem__(self, item):
-        return self.ordinals[item]
-
-    def __iter__(self):
-        return iter(self.ordinals)
-
-    def __contains__(self, other):
-        return other in self.ordinals
-
-    def __bool__(self):
-        return bool(self.factors)
-
-    def product(self):
-        "Return the product of the factors."
-        return multiply_factors(self.factors)
+        latex = self.as_latex()
+        return f"${latex}$"
 
     def as_latex(self):
         """

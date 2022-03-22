@@ -120,12 +120,14 @@ def test_factorise_term_successor(a):
 def test_factors(a):
     fs = factors(a)
 
+    ordinals = [a for a, _ in fs]
+
     # Check the factorisation is correct
-    assert all(is_finite_ordinal(f) and f > 1 or f.is_prime() for f in fs.ordinals), "Not all factors are prime"
+    assert all(is_finite_ordinal(a) and a > 1 or a.is_prime() for a in ordinals), "Not all factors are prime"
     assert fs.product() == a, "Incorrect factorisation"
 
     # Check the grouping and order of factors is correct
-    grouper = groupby(fs.ordinals, key=lambda x: is_finite_ordinal(x) or x.is_successor())
+    grouper = groupby(ordinals, key=lambda x: is_finite_ordinal(x) or x.is_successor())
     groups = [(is_successor, list(ords)) for is_successor, ords in grouper]
 
     assert len(groups) <= 2, "Factors not ordered by limit/successor"
